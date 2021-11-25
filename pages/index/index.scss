@@ -1,0 +1,57 @@
+.christmas {
+  margin: 40rpx;
+  padding: 100rpx;
+  height: 100rpx;
+  position: relative;
+  box-shadow: 10px 8px 8px gray;
+  border: {
+    radius: 10px;
+    width: 2px;
+    color: #2C3E50;
+    style: solid;
+  }
+
+  .img {
+    margin: 0 0 0 -100rpx;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    z-index: -1;
+    opacity: 0.6;
+    border: {
+      radius: 10px;
+    };
+  }
+
+  .text {
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+    line-height: 30px;
+  }
+
+  .node {
+    position: absolute;
+    bottom: 10px;
+    text-align: center;
+    font-size: 16px;
+    color: #273746;
+    font-weight: bold;
+  }
+}
+
+.about {
+  $length: 80px;
+  text-align: center;
+  line-height: $length;
+  font-size: 20px;
+  height: $length;
+  width: $length;
+  background-color: #00CCFF;
+  box-shadow: 8px 4px 8px gray;
+  border-radius: 50%;
+  position: fixed;
+  bottom: 100rpx;
+  right: 100rpx;
+}

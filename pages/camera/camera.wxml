@@ -1,0 +1,9 @@
+<view class="page">
+    <view class="camera">
+        <mp-icon icon="camera" size="100" type="{{type}}"></mp-icon>
+    </view>
+    <view class="text">点击相机选择照片</view>
+    <view class="btn">
+        <button catch:tap="back">返回</button>
+    </view>
+</view>
