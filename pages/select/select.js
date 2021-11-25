@@ -1,5 +1,7 @@
 Page({
-    data: {},
+    data: {
+        change: 'outline'
+    },
     onLoad: function (options) {
 
     }

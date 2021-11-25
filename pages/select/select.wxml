@@ -1,0 +1,14 @@
+<view class="page">
+    <view class="part">
+        <view class="select" mark:style="0" catch:tap="SwitchTo">
+            <mp-icon icon="add" type="{{change}}" size="100"></mp-icon>
+        </view>
+        <view class="text">选择人像照</view>
+    </view>
+    <view class="part">
+        <view class="select" mark:style="1" catch:tap="SwitchTo">
+            <mp-icon icon="add" type="{{change}}" size="100"></mp-icon>
+        </view>
+        <view class="text">选择背景图</view>
+    </view>
+</view>

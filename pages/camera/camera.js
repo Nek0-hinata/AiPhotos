@@ -8,5 +8,11 @@ Page({
 
     back: function () {
         wx.navigateBack({})
+    },
+
+    SwitchTo: function (e) {
+        wx.navigateTo({
+            url: '/pages' + e.mark.url
+        })
     }
 });
