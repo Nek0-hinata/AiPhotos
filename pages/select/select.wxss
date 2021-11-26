@@ -25,9 +25,7 @@
   color: red;
 }
 .page .endPart {
-  position: fixed;
   width: 100%;
-  bottom: 25px;
   display: flex;
   justify-content: space-around;
   z-index: 10;
@@ -37,10 +35,13 @@
   width: 100rpx;
   padding: 20rpx;
   border-radius: 50%;
-  background-color: #fdd62f;
   z-index: -1;
 }
 .page .endPart .hatBtn .img {
   height: 100%;
   width: 100%;
+}
+.page .fin {
+  background-color: #fdd62f;
+  margin: 80rpx 0;
 }

@@ -1,23 +1,24 @@
 <view class="page">
-    <view class="part" mark:style="0" catch:tap="SwitchTo">
-        <image src="/statics/add2.png" class="img"></image>
+    <view class="part" mark:style="0" catch:tap="SelectPhoto">
+        <image src="{{portraitUrl}}" class="img"></image>
         <view class="text">选择人像照</view>
     </view>
-    <view class="part" mark:style="1" catch:tap="SwitchTo">
-        <image src="/statics/add1.png" class="img"></image>
+    <view class="part" mark:style="1" catch:tap="SelectPhoto">
+        <image src="{{bgUrl}}" class="img"></image>
         <view class="text">选择背景图</view>
     </view>
+    <button class="fin">开始合成！</button>
     <view class="endPart">
-        <view class="hatBtn">
+        <view class="hatBtn" style="background-color:{{Selected[0] ? isSelectColor : isNotSelectColor }}" mark:hat="0" catch:tap="SelectHat">
             <image src="/statics/hat1.png" class="img"></image>
         </view>
-        <view class="hatBtn">
+        <view class="hatBtn" style="background-color:{{Selected[1] ? isSelectColor : isNotSelectColor }}" mark:hat="1" catch:tap="SelectHat">
             <image src="/statics/hat2.png" class="img"></image>
         </view>
-        <view class="hatBtn">
+        <view class="hatBtn" style="background-color:{{Selected[2] ? isSelectColor : isNotSelectColor }}" mark:hat="2" catch:tap="SelectHat">
             <image src="/statics/hat3.png" class="img"></image>
         </view>
-        <view class="hatBtn">
+        <view class="hatBtn" style="background-color:{{Selected[3] ? isSelectColor : isNotSelectColor }}" mark:hat="3" catch:tap="SelectHat">
             <image src="/statics/hat4.png" class="img"></image>
         </view>
     </view>

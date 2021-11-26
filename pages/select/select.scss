@@ -30,9 +30,9 @@
   }
 
   .endPart {
-    position: fixed;
+    //position: absolute;
     width: 100%;
-    bottom: 25px;
+    //bottom: 25px;
     display: flex;
     justify-content: space-around;
     z-index: 10;
@@ -42,7 +42,6 @@
       width: 100rpx;
       padding: 20rpx;
       border-radius: 50%;
-      background-color: #fdd62f;
       z-index: -1;
 
       .img {
@@ -50,5 +49,10 @@
         width: 100%;
       }
     }
+  }
+
+  .fin {
+    background-color: #fdd62f;
+    margin: 80rpx 0;
   }
 }
