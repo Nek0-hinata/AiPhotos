@@ -6,17 +6,24 @@
   align-items: center;
 }
 .page .camera {
-  padding: 20px;
   border-radius: 50%;
-  border-width: 1px;
-  border-style: solid;
+}
+.page .camera .img {
+  box-shadow: 0 0 20px 15px #ffffff;
+  height: 350rpx;
+  width: 350rpx;
+  z-index: -1;
+  border-radius: 50%;
 }
 .page .text {
   margin: 30px 0;
-  font-size: 18px;
+  font-size: 24px;
   letter-spacing: 2px;
+  color: red;
+  font-weight: bold;
 }
 .page .btn {
   position: absolute;
   bottom: 100rpx;
+  background-color: #fdd62f;
 }

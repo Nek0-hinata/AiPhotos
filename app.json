@@ -1,13 +1,13 @@
 {
   "pages":[
+    "pages/index/index",
     "pages/select/select",
     "pages/camera/camera",
-    "pages/index/index",
     "pages/about/about"
   ],
   "window":{
     "backgroundTextStyle":"light",
-    "navigationBarBackgroundColor": "#fff",
+    "navigationBarBackgroundColor": "#fff0b8",
     "navigationBarTitleText": "Weixin",
     "navigationBarTextStyle":"black"
   },

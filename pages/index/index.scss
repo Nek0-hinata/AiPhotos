@@ -1,39 +1,32 @@
 .christmas {
-  margin: 40rpx;
-  padding: 100rpx;
-  height: 100rpx;
   position: relative;
-  box-shadow: 10px 8px 8px gray;
-  border: {
-    radius: 10px;
-    width: 2px;
-    color: #2C3E50;
-    style: solid;
-  }
+  margin: 40rpx;
+  height: 300rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
+  //background-color: #273746;
   .img {
-    margin: 0 0 0 -100rpx;
-    height: 100%;
-    width: 100%;
     position: absolute;
     top: 0;
     z-index: -1;
-    opacity: 0.6;
-    border: {
-      radius: 10px;
-    };
+    height: 100%;
+    width: 100%;
+    border-radius: 60rpx;
   }
 
   .text {
+    margin-bottom: 20rpx;
     text-align: center;
     font-size: 28px;
     font-weight: bold;
-    line-height: 30px;
   }
 
   .node {
     position: absolute;
-    bottom: 10px;
+    bottom: 10rpx;
+    left: 80rpx;
     text-align: center;
     font-size: 16px;
     color: #273746;
@@ -42,16 +35,22 @@
 }
 
 .about {
-  $length: 80px;
-  text-align: center;
-  line-height: $length;
-  font-size: 20px;
-  height: $length;
-  width: $length;
-  background-color: #00CCFF;
-  box-shadow: 8px 4px 8px gray;
-  border-radius: 50%;
+  $length: 100px;
+  $gap: 30px;
   position: fixed;
-  bottom: 100rpx;
-  right: 100rpx;
+  bottom: $gap;
+  right: $gap;
+
+  .img {
+    height: $length;
+    width: $length;
+  }
+
+  .text {
+    position: fixed;
+    bottom: (($length + $gap)/2);
+    right: (($length + $gap)/2);
+    font-size: 16px;
+    font-weight: bold;
+  }
 }

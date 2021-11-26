@@ -6,14 +6,41 @@
   width: 100%;
 }
 .page .part {
-  width: 500rpx;
-  padding: 40rpx 0;
+  width: 600rpx;
+  height: 350rpx;
   margin: 80rpx;
   display: flex;
-  justify-content: center;
   align-items: center;
   flex-direction: column;
   border-radius: 10px;
-  border-style: solid;
-  border-width: 1px;
+}
+.page .part .img {
+  height: 100%;
+  width: 100%;
+}
+.page .part .text {
+  margin-top: -45px;
+  font-size: 26px;
+  font-weight: bold;
+  color: red;
+}
+.page .endPart {
+  position: fixed;
+  width: 100%;
+  bottom: 25px;
+  display: flex;
+  justify-content: space-around;
+  z-index: 10;
+}
+.page .endPart .hatBtn {
+  height: 100rpx;
+  width: 100rpx;
+  padding: 20rpx;
+  border-radius: 50%;
+  background-color: #fdd62f;
+  z-index: -1;
+}
+.page .endPart .hatBtn .img {
+  height: 100%;
+  width: 100%;
 }

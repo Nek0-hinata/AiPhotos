@@ -1,9 +1,9 @@
 <view class="page">
     <view class="camera" catch:tap="SwitchTo" mark:url="/select/select">
-        <mp-icon icon="camera" size="100" type="{{type}}"></mp-icon>
+        <image src="/statics/camera.png" class="img"></image>
     </view>
-    <view class="text">点击相机选择照片</view>
-    <view class="btn">
-        <button catch:tap="back">返回</button>
-    </view>
+    <view class="text">点击相机选择照片!</view>
+
+    <button catch:tap="back" class="btn">返回</button>
+
 </view>
