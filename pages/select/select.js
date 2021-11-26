@@ -1,7 +1,15 @@
 Page({
     data: {
-        portraitUrl: '/statics/add2.png',
-        bgUrl: '/statics/add1.png',
+        portrait: {
+            url: '/statics/add2.png',
+            width: undefined,
+            height: undefined
+        },
+        bg: {
+            url: '/statics/add1.png',
+            width: undefined,
+            height: undefined
+        },
         Selected: [
             false,
             false,
@@ -21,14 +29,14 @@ Page({
             count: 1,
             sizeType: ['original'],
             success(res) {
-                const tempFiles = res.tempFilePaths
+                const tempFiles = res.tempFilePaths[0]
                 if (e.mark.style == 0) {
                     that.setData({
-                        portraitUrl: tempFiles
+                        'portrait.url': tempFiles
                     })
                 } else {
                     that.setData({
-                        bgUrl: tempFiles
+                        'bg.url': tempFiles
                     })
                 }
             }
@@ -45,6 +53,56 @@ Page({
         }
         this.setData({
             Selected: temp
+        })
+    },
+
+    Start: function () {
+        const that = this
+        wx.getImageInfo({
+            src: that.data.portrait.url,
+            success(res) {
+                const {width, height} = res
+                let scale = that.getScale(width, height)
+                scale = scale > 1 ? scale + 0.5 : scale
+                that.setData({
+                    'portrait.width': width / scale,
+                    'portrait.height': height / scale
+                })
+            },
+            fail(res) {
+                wx.showToast({
+                    title: '图片获取失败',
+                    icon: "error"
+                })
+            }
+        })
+        wx.getImageInfo({
+            src: that.data.bg.url,
+            success(res) {
+                const {width, height} = res
+                let scale = that.getScale(width, height)
+                scale = scale > 1 ? scale + 0.5 : scale
+                that.setData({
+                    'portrait.width': width / scale,
+                    'portrait.height': height / scale
+                })
+            },
+            fail(res) {
+                wx.showToast({
+                    title: '图片获取失败',
+                    icon: "error"
+                })
+            }
+        })
+    },
+
+    getScale: function (width, height) {
+        wx.getImageInfo({
+            success(res) {
+                const rHeight = res.windowHeight
+                const rWidth = res.windowWidth
+                return Math.max(1, rHeight / height, rWidth / width)
+            }
         })
     }
 });

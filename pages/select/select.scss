@@ -6,8 +6,8 @@
   width: 100%;
 
   .part {
-    width: 600rpx;
-    height: 350rpx;
+    width: 650rpx;
+    height: 400rpx;
     margin: 80rpx;
     display: flex;
     align-items: center;
@@ -29,9 +29,15 @@
     }
   }
 
+  .fin {
+    background-color: #fdd62f;
+    margin: 80rpx 0;
+  }
+
   .endPart {
     //position: absolute;
     width: 100%;
+    margin: 100rpx 0;
     //bottom: 25px;
     display: flex;
     justify-content: space-around;
@@ -49,10 +55,5 @@
         width: 100%;
       }
     }
-  }
-
-  .fin {
-    background-color: #fdd62f;
-    margin: 80rpx 0;
   }
 }
