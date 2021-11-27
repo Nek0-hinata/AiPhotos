@@ -3,12 +3,14 @@ Page({
         portrait: {
             url: '/statics/add2.png',
             width: undefined,
-            height: undefined
+            height: undefined,
+            name: 'portrait'
         },
         bg: {
             url: '/statics/add1.png',
             width: undefined,
-            height: undefined
+            height: undefined,
+            name: 'bg'
         },
         Selected: [
             false,
@@ -58,51 +60,58 @@ Page({
 
     Start: function () {
         const that = this
-        wx.getImageInfo({
-            src: that.data.portrait.url,
-            success(res) {
-                const {width, height} = res
-                let scale = that.getScale(width, height)
-                scale = scale > 1 ? scale + 0.5 : scale
-                that.setData({
-                    'portrait.width': width / scale,
-                    'portrait.height': height / scale
+        const getImageInfo = getApp().promixify(wx.getImageInfo)
+        Promise.all(
+            [that.data.portrait, that.data.bg].map(obj => getImageInfo(
+                {
+                    src: obj.url
+                },
+                res => {
+                    const {width, height} = res
+                    console.log(width)
+                    that.getScale(width, height)
+                        .then(res => {
+                            let scale = res
+                            that.setData({
+                                [`${obj.name}.width`]: width / scale,
+                                [`${obj.name}.height`]: height / scale
+                            })
+                        })
+                        .catch(res => {
+                            wx.showToast({
+                                title: res
+                            })
+                        })
+                },
+                res => {
+                    wx.showToast({
+                        title: '出现错误啦'
+                    })
                 })
-            },
-            fail(res) {
-                wx.showToast({
-                    title: '图片获取失败',
-                    icon: "error"
-                })
-            }
-        })
-        wx.getImageInfo({
-            src: that.data.bg.url,
-            success(res) {
-                const {width, height} = res
-                let scale = that.getScale(width, height)
-                scale = scale > 1 ? scale + 0.5 : scale
-                that.setData({
-                    'portrait.width': width / scale,
-                    'portrait.height': height / scale
-                })
-            },
-            fail(res) {
-                wx.showToast({
-                    title: '图片获取失败',
-                    icon: "error"
-                })
-            }
+            )
+        ).then(res => {
+            wx.showLoading({
+                title: '合成中'
+            })
+            setTimeout(()=>{
+                wx.hideLoading()
+            }, 3000)
         })
     },
 
     getScale: function (width, height) {
-        wx.getImageInfo({
-            success(res) {
-                const rHeight = res.windowHeight
-                const rWidth = res.windowWidth
-                return Math.max(1, rHeight / height, rWidth / width)
-            }
+        return new Promise((resolve, reject) => {
+            wx.getSystemInfoAsync({
+                success(res) {
+                    const rHeight = res.windowHeight
+                    const rWidth = res.windowWidth
+                    resolve(Math.max(1, rHeight / height, rWidth / width))
+                },
+                fail(res) {
+                    reject(res)
+                }
+            })
         })
     }
-});
+})
+;
