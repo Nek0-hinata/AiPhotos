@@ -50,7 +50,6 @@ Page({
         let id = e.mark.hat
         let temp = that.data.Selected
         for (let i in temp) {
-            console.log(id)
             temp[i] = i === id;
         }
         this.setData({
@@ -58,6 +57,10 @@ Page({
         })
     },
 
+    /**
+     * 缩放图片并保存缩放后宽高
+     * @constructor
+     */
     Start: function () {
         const that = this
         const getImageInfo = getApp().promixify(wx.getImageInfo)
@@ -68,10 +71,11 @@ Page({
                 },
                 res => {
                     const {width, height} = res
-                    console.log(width)
+                    console.log(width, height)
                     that.getScale(width, height)
                         .then(res => {
                             let scale = res
+                            console.log(scale)
                             that.setData({
                                 [`${obj.name}.width`]: width / scale,
                                 [`${obj.name}.height`]: height / scale
@@ -90,12 +94,14 @@ Page({
                 })
             )
         ).then(res => {
-            wx.showLoading({
-                title: '合成中'
+            wx.navigateTo({
+                url: '/pages/photo/photo',
+                success(res) {
+                    res.eventChannel.emit('size', {
+                        data: that.data.bg
+                    })
+                }
             })
-            setTimeout(()=>{
-                wx.hideLoading()
-            }, 3000)
         })
     },
 
@@ -105,7 +111,7 @@ Page({
                 success(res) {
                     const rHeight = res.windowHeight
                     const rWidth = res.windowWidth
-                    resolve(Math.max(1, rHeight / height, rWidth / width))
+                    resolve(Math.max(1, height / rHeight, width / rWidth))
                 },
                 fail(res) {
                     reject(res)

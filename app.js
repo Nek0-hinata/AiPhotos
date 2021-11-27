@@ -17,6 +17,11 @@ App({
         userInfo: null
     },
 
+    /**
+     * 将一个微信api封装为期约，第一个参数为api的设置，第二个参数为成功函数，第三个为失败函数
+     * @param api
+     * @returns {function(*=, *, *, ...[*]): Promise<unknown>}
+     */
     promixify: function (api) {
         return (options, successes, unSuccesses, ...params) => {
             return new Promise((resolve, reject) => {

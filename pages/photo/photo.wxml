@@ -1,0 +1,4 @@
+<view class="page">
+    <canvas id="canvas" type="2d" disable-scroll="true" class="can"
+            style="width:{{bg.width}}px; height:{{bg.height}}px;"></canvas>
+</view>
