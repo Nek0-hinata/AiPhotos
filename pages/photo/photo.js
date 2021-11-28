@@ -15,13 +15,14 @@ Page({
             data.test.scale = 2
             data.test.width /= data.test.scale
             data.test.height /= data.test.scale
+            data.test.rotate = 0
             data.test.start = {
                 x: data.test.x,
                 y: data.test.y
             }
             data.test.center = {
-                x: (data.test.width - data.test.x) / 2,
-                y: (data.test.height - data.test.y) / 2
+                x: data.test.x + data.test.width / 2,
+                y: data.test.y + data.test.height / 2
             }
             that.setData({
                 bg: data.data,
@@ -78,13 +79,23 @@ Page({
                         c.drawImage(close, P.x - 12, P.y - 12, 24, 24)
                     }
                 }
+                //c.drawImage(bg, 0, 0, that.data.bg?.width, that.data.bg?.height)
                 close.src = '/statics/close.png'
+                c.translate(P.center.x, P.center.y)
+                c.rotate(P.rotate)
+                c.translate(-P.center.x, -P.center.y)
+                console.log('旋转时', P.rotate)
                 c.drawImage(person, P.x, P.y, P?.width, P?.height)
+                c.rotate(-P.rotate)
+                that.setData({
+                    ['portrait.rotate']: 0
+                })
             }
             person.src = P?.url
-            c.drawImage(bg, 0, 0, that.data.bg?.width, that.data.bg?.height)
+
         }
         bg.src = that.data.bg?.url
+
     },
 
     start: function (e) {
@@ -93,7 +104,6 @@ Page({
         switch (this.isInWhere(x, y)) {
             case 0:
 
-                break
             case 2:
                 let start = {
                     x: x,
@@ -101,7 +111,7 @@ Page({
                 }
                 that.setData({
                     selected: true,
-                    ['portrait.start']: start
+                    ['portrait.start']: start,
                 })
                 break
             case 3:
@@ -115,21 +125,45 @@ Page({
     move: function (e) {
         const {x, y} = e.touches[0]
         const that = this
-        const startX = that.data.portrait.x
-        const startY = that.data.portrait.y
+        //人像图左上角坐标
+        const X = that.data.portrait.x
+        const Y = that.data.portrait.y
+        //中心点坐标
+        const center = {
+            x: that.data.portrait.center.x,
+            y: that.data.portrait.center.y
+        }
         switch (this.isInWhere(x, y)) {
             case 0:
-
+                //点击坐标减中心坐标，算出与中心点所成角度
+                let before = Math.atan2(that.data.portrait.start.y - center.y, that.data.portrait.start.x - center.x)
+                //移动坐标减中心坐标，同上
+                let after = Math.atan2(y - center.y, x - center.x)
+                console.log('before, after', before * 180 / Math.PI, after * 180 / Math.PI, before + after)
+                that.setData({
+                    ['portrait.rotate']: after - before
+                })
+                console.log(that.data.portrait.rotate)
+                //求出旋转后角度
+                let r = Math.sqrt(Math.pow(that.data.portrait.x - that.data.portrait.center.x, 2) + that.data.portrait.y - that.data.portrait.center.y)
+                let angle = Math.atan2(that.data.portrait.y - that.data.portrait.center.y, that.data.portrait.x - that.data.portrait.center.x) - that.data.portrait.rotate
+                that.setData({
+                    ['portrait.x']: r * Math.cos(angle) + that.data.portrait.center.x,
+                    ['portrait.y']: r * Math.sin(angle) + that.data.portrait.center.y
+                })
                 break
             case 2:
                 that.setData({
-                    ['portrait.x']: startX + x - that.data.portrait.start.x,
-                    ['portrait.y']: startY + y - that.data.portrait.start.y
+                    ['portrait.x']: X + x - that.data.portrait.start.x,
+                    ['portrait.y']: Y + y - that.data.portrait.start.y,
                 })
+                break
         }
         that.setData({
             ['portrait.start.x']: x,
-            ['portrait.start.y']: y
+            ['portrait.start.y']: y,
+            ['portrait.center.x']: that.data.portrait.x + that.data.portrait.width / 2,
+            ['portrait.center.y']: that.data.portrait.y + that.data.portrait.height / 2,
         })
         this.draw()
     },
