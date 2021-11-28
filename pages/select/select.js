@@ -98,7 +98,8 @@ Page({
                 url: '/pages/photo/photo',
                 success(res) {
                     res.eventChannel.emit('size', {
-                        data: that.data.bg
+                        data: that.data.bg,
+                        test: that.data.portrait
                     })
                 }
             })
