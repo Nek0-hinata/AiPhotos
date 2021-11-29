@@ -147,8 +147,9 @@ Page({
                 let r = Math.sqrt(Math.pow(that.data.portrait.x - that.data.portrait.center.x, 2) + Math.pow(that.data.portrait.y - that.data.portrait.center.y, 2))
                 let angle = Math.atan2(that.data.portrait.y - that.data.portrait.center.y, that.data.portrait.x - that.data.portrait.center.x) - that.data.portrait.rotate + after - before
                 that.setData({
-                    ['portrait.transform.x']: r * Math.cos(angle) + that.data.portrait.center.x,
-                    ['portrait.transform.y']: r * Math.sin(angle) + that.data.portrait.center.y,
+                    // ['portrait.transform.x']: r * Math.cos(angle) + that.data.portrait.center.x,
+                    // ['portrait.transform.y']: r * Math.sin(angle) + that.data.portrait.center.y,
+                    ['portrait.transform']: that.getTransform(that.data.portrait.x, that.data.portrait.y, -(that.data.portrait.rotate + after - before)),
                     ['portrait.rotate']: that.data.portrait.rotate + after - before
                 })
                 break
@@ -189,15 +190,20 @@ Page({
      */
     isInWhere: function (x, y) {
         let that = this
+        const P = that.data.portrait
+        let x1 = P.center.x + (x - P.center.x) * Math.cos(-P.rotate) - (y - P.center.y) * Math.sin(-P.rotate)
+        let y1 = P.center.y + (x - P.center.x) * Math.sin(-P.rotate) + (y - P.center.y) * Math.cos(-P.rotate)
+        x = x1
+        y = y1
         let zoom = {
-            x: that.data.portrait.transform.x + that.data.portrait?.width,
-            y: that.data.portrait.transform.y + that.data.portrait?.height,
+            x: that.data.portrait.x + that.data.portrait?.width,
+            y: that.data.portrait.y + that.data.portrait?.height,
             w: 12,
             h: 12
         }
         let del = {
-            x: that.data.portrait.transform.x,
-            y: that.data.portrait.transform.y,
+            x: that.data.portrait.x,
+            y: that.data.portrait.y,
             w: 12,
             h: 12
         }
@@ -205,10 +211,17 @@ Page({
             return 0
         } else if (x <= del.x + del.w && x >= del.x - del.w && y <= del.y + del.h && y >= del.y - del.h) {
             return 1
-        } else if (x - that.data.portrait.transform.x >= 0 && x - that.data.portrait.transform.y >= 0 && that.data.portrait.transform.x + that.data.portrait.width - x >= 0 && that.data.portrait.transform.y + that.data.portrait.height - y >= 0) {
+        } else if (x >= that.data.portrait.x && x <= that.data.portrait.x + that.data.portrait.width && y >= that.data.portrait.y && y <= that.data.portrait.y + that.data.portrait?.height) {
             return 2
         } else {
             return 3
+        }
+    },
+
+    getTransform: function (x, y, rotate = this.data.portrait.rotate) {
+        return {
+            x: x * Math.cos(rotate) - y * Math.sin(rotate),
+            y: x * Math.sin(rotate) + y * Math.cos(rotate)
         }
     }
 });
