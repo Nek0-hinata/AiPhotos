@@ -35,6 +35,11 @@ Page({
                 x: data.test.x,
                 y: data.test.y
             }
+            //用户点击后状态
+            data.test.status = -1
+            //图像是否被选中
+            data.test.selected = true
+
             that.setData({
                 bg: data.data,
                 portrait: data.test
@@ -75,12 +80,21 @@ Page({
         const c = that.data.ctx
         const P = that.data.portrait
         c.clearRect(0, 0, canvas.width, canvas.height)
-        c.save()
         bg.onload = () => {
             person.onload = () => {
-                if (that.data.selected) {
-                    close.onload = () => {
-                        zoom.onload = () => {
+                close.onload = () => {
+                    zoom.onload = () => {
+                        c.drawImage(bg, 0, 0, that.data.bg?.width, that.data.bg?.height)
+                        c.save()
+                        //旋转画布，并将旋转后人像绘制出来
+                        c.translate(P.center.x, P.center.y)
+                        c.rotate(P.rotate)
+                        c.translate(-P.center.x, -P.center.y)
+                        //绘制人像
+                        c.drawImage(person, P.x, P.y, P?.width, P?.height)
+                        //绘制其他按钮
+                        if (that.data.portrait.selected) {
+                            c.drawImage(close, P.x - 12, P.y - 12, 24, 24)
                             c.drawImage(zoom, P.x + P.width - 12, P.y + P.height - 12, 24, 24)
                             c.setLineDash([10, 10])
                             c.lineWidth = 2
@@ -88,52 +102,26 @@ Page({
                             c.lineDashOffset = 10
                             c.strokeRect(P.x, P.y, P.width, P.height)
                         }
-                        zoom.src = '/statics/zoom.png'
-                        c.drawImage(close, P.x - 12, P.y - 12, 24, 24)
+                        //恢复画布
+                        c.restore()
                     }
+                    zoom.src = '/statics/zoom.png'
                 }
-                //c.drawImage(bg, 0, 0, that.data.bg?.width, that.data.bg?.height)
                 close.src = '/statics/close.png'
-                c.translate(P.center.x, P.center.y)
-                c.rotate(P.rotate)
-                c.translate(-P.center.x, -P.center.y)
-                //c.restore()
-                c.drawImage(person, P.x, P.y, P?.width, P?.height)
-                //console.log('旋转时', P.rotate)
-                that.setData({
-                    ['portrait.rotate']: 0
-                })
             }
             person.src = P?.url
         }
         bg.src = that.data.bg?.url
-        c.restore()
-
     },
 
     // TODO 图像的变换方法可能要由第一次点击时确定
     start: function (e) {
-        const that = this
         const {x, y} = e.touches[0]
-        console.log(this.isInWhere(x, y))
-        switch (this.isInWhere(x, y)) {
-            case 0:
-
-            case 2:
-                let start = {
-                    x: x,
-                    y: y
-                }
-                that.setData({
-                    selected: true,
-                    ['portrait.start']: start,
-                })
-                break
-            case 3:
-                that.setData({
-                    selected: false
-                })
-        }
+        this.setData({
+            ['portrait.start']: {x, y},
+            ['portrait.selected']: this.isInWhere(x, y) !== 3,
+            ['portrait.status']: this.isInWhere(x, y)
+        })
         this.draw()
     },
 
@@ -149,29 +137,22 @@ Page({
             x: that.data.portrait.center.x,
             y: that.data.portrait.center.y
         }
-        console.log(this.isInWhere(x, y))
-        switch (this.isInWhere(x, y)) {
+        switch (that.data.portrait.status) {
             case 0:
                 //点击坐标减中心坐标，算出与中心点所成角度
                 let before = Math.atan2(that.data.portrait.start.y - center.y, that.data.portrait.start.x - center.x)
                 //移动坐标减中心坐标，同上
                 let after = Math.atan2(y - center.y, x - center.x)
-                //console.log('before, after', before * 180 / Math.PI, after * 180 / Math.PI, before + after)
-                //console.log(that.data.portrait.rotate)
                 //求出旋转后角度
                 let r = Math.sqrt(Math.pow(that.data.portrait.x - that.data.portrait.center.x, 2) + Math.pow(that.data.portrait.y - that.data.portrait.center.y, 2))
-                let angle = Math.atan2(that.data.portrait.y - that.data.portrait.center.y, that.data.portrait.x - that.data.portrait.center.x) - that.data.portrait.rotate
+                let angle = Math.atan2(that.data.portrait.y - that.data.portrait.center.y, that.data.portrait.x - that.data.portrait.center.x) - that.data.portrait.rotate + after - before
                 that.setData({
                     ['portrait.transform.x']: r * Math.cos(angle) + that.data.portrait.center.x,
                     ['portrait.transform.y']: r * Math.sin(angle) + that.data.portrait.center.y,
-                    ['portrait.rotate']: after - before
+                    ['portrait.rotate']: that.data.portrait.rotate + after - before
                 })
                 break
             case 2:
-                // that.setData({
-                //     ['portrait.x']: X + x - that.data.portrait.start.x,
-                //     ['portrait.y']: Y + y - that.data.portrait.start.y,
-                // })
                 that.setData({
                     ['portrait.transform.x']: X + x - that.data.portrait.start.x,
                     ['portrait.transform.y']: Y + y - that.data.portrait.start.y,
@@ -179,19 +160,24 @@ Page({
                     ['portrait.y']: Y + y - that.data.portrait.start.y
                 })
                 break
+            case 3:
+
+                break
         }
         //每次移动后，重新计算移动后图像中心点坐标
         that.setData({
             ['portrait.start.x']: x,
             ['portrait.start.y']: y,
             ['portrait.center.x']: that.data.portrait.x + that.data.portrait.width / 2,
-            ['portrait.center.y']: that.data.portrait.y + that.data.portrait.height / 2
+            ['portrait.center.y']: that.data.portrait.y + that.data.portrait.height / 2,
         })
         this.draw()
     },
 
     end: function (e) {
-
+        // this.setData({
+        //     ['portrait.rotate']: 0
+        // })
     },
 
     /**
