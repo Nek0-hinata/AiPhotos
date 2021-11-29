@@ -30,11 +30,6 @@ Page({
                 x: data.test.x + data.test.width / 2,
                 y: data.test.y + data.test.height / 2
             }
-            //图像旋转后虚拟坐标
-            data.test.transform = {
-                x: data.test.x,
-                y: data.test.y
-            }
             //用户点击后状态
             data.test.status = -1
             //图像是否被选中
@@ -143,20 +138,12 @@ Page({
                 let before = Math.atan2(that.data.portrait.start.y - center.y, that.data.portrait.start.x - center.x)
                 //移动坐标减中心坐标，同上
                 let after = Math.atan2(y - center.y, x - center.x)
-                //求出旋转后角度
-                let r = Math.sqrt(Math.pow(that.data.portrait.x - that.data.portrait.center.x, 2) + Math.pow(that.data.portrait.y - that.data.portrait.center.y, 2))
-                let angle = Math.atan2(that.data.portrait.y - that.data.portrait.center.y, that.data.portrait.x - that.data.portrait.center.x) - that.data.portrait.rotate + after - before
                 that.setData({
-                    // ['portrait.transform.x']: r * Math.cos(angle) + that.data.portrait.center.x,
-                    // ['portrait.transform.y']: r * Math.sin(angle) + that.data.portrait.center.y,
-                    ['portrait.transform']: that.getTransform(that.data.portrait.x, that.data.portrait.y, -(that.data.portrait.rotate + after - before)),
                     ['portrait.rotate']: that.data.portrait.rotate + after - before
                 })
                 break
             case 2:
                 that.setData({
-                    ['portrait.transform.x']: X + x - that.data.portrait.start.x,
-                    ['portrait.transform.y']: Y + y - that.data.portrait.start.y,
                     ['portrait.x']: X + x - that.data.portrait.start.x,
                     ['portrait.y']: Y + y - that.data.portrait.start.y
                 })
@@ -218,10 +205,4 @@ Page({
         }
     },
 
-    getTransform: function (x, y, rotate = this.data.portrait.rotate) {
-        return {
-            x: x * Math.cos(rotate) - y * Math.sin(rotate),
-            y: x * Math.sin(rotate) + y * Math.cos(rotate)
-        }
-    }
 });
