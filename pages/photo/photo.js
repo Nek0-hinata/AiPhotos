@@ -138,8 +138,15 @@ Page({
                 let before = Math.atan2(that.data.portrait.start.y - center.y, that.data.portrait.start.x - center.x)
                 //移动坐标减中心坐标，同上
                 let after = Math.atan2(y - center.y, x - center.x)
+                //勾股定理算两次移动距离差
+                let line1 = Math.sqrt(Math.pow(that.data.portrait.start.x - that.data.portrait.center.x, 2) + Math.pow(that.data.portrait.start.y - that.data.portrait.center.y, 2))
+                let line2 = Math.sqrt(Math.pow(x - that.data.portrait.center.x, 2) + Math.pow(y - that.data.portrait.center.y, 2))
                 that.setData({
-                    ['portrait.rotate']: that.data.portrait.rotate + after - before
+                    ['portrait.rotate']: that.data.portrait.rotate + after - before,
+                    ['portrait.height'] : that.data.portrait.height + (line2 - line1) * (that.data.portrait.height / that.data.portrait.width),
+                    ['portrait.width']: that.data.portrait.width + (line2 - line1),
+                    ['portrait.x']: that.data.portrait.x - (line2 - line1) / 2,
+                    ['portrait.y']: that.data.portrait.y - (line2 - line1) / 2
                 })
                 break
             case 2:
