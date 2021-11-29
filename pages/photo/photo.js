@@ -97,8 +97,9 @@ Page({
                 c.translate(P.center.x, P.center.y)
                 c.rotate(P.rotate)
                 c.translate(-P.center.x, -P.center.y)
+                //c.restore()
                 c.drawImage(person, P.x, P.y, P?.width, P?.height)
-                console.log('旋转时', P.rotate)
+                //console.log('旋转时', P.rotate)
                 that.setData({
                     ['portrait.rotate']: 0
                 })
@@ -114,6 +115,7 @@ Page({
     start: function (e) {
         const that = this
         const {x, y} = e.touches[0]
+        console.log(this.isInWhere(x, y))
         switch (this.isInWhere(x, y)) {
             case 0:
 
@@ -147,6 +149,7 @@ Page({
             x: that.data.portrait.center.x,
             y: that.data.portrait.center.y
         }
+        console.log(this.isInWhere(x, y))
         switch (this.isInWhere(x, y)) {
             case 0:
                 //点击坐标减中心坐标，算出与中心点所成角度
@@ -154,22 +157,26 @@ Page({
                 //移动坐标减中心坐标，同上
                 let after = Math.atan2(y - center.y, x - center.x)
                 //console.log('before, after', before * 180 / Math.PI, after * 180 / Math.PI, before + after)
-                that.setData({
-                    ['portrait.rotate']: after - before
-                })
                 //console.log(that.data.portrait.rotate)
                 //求出旋转后角度
                 let r = Math.sqrt(Math.pow(that.data.portrait.x - that.data.portrait.center.x, 2) + Math.pow(that.data.portrait.y - that.data.portrait.center.y, 2))
                 let angle = Math.atan2(that.data.portrait.y - that.data.portrait.center.y, that.data.portrait.x - that.data.portrait.center.x) - that.data.portrait.rotate
                 that.setData({
                     ['portrait.transform.x']: r * Math.cos(angle) + that.data.portrait.center.x,
-                    ['portrait.transform.y']: r * Math.sin(angle) + that.data.portrait.center.y
+                    ['portrait.transform.y']: r * Math.sin(angle) + that.data.portrait.center.y,
+                    ['portrait.rotate']: after - before
                 })
                 break
             case 2:
+                // that.setData({
+                //     ['portrait.x']: X + x - that.data.portrait.start.x,
+                //     ['portrait.y']: Y + y - that.data.portrait.start.y,
+                // })
                 that.setData({
+                    ['portrait.transform.x']: X + x - that.data.portrait.start.x,
+                    ['portrait.transform.y']: Y + y - that.data.portrait.start.y,
                     ['portrait.x']: X + x - that.data.portrait.start.x,
-                    ['portrait.y']: Y + y - that.data.portrait.start.y,
+                    ['portrait.y']: Y + y - that.data.portrait.start.y
                 })
                 break
         }
@@ -178,7 +185,7 @@ Page({
             ['portrait.start.x']: x,
             ['portrait.start.y']: y,
             ['portrait.center.x']: that.data.portrait.x + that.data.portrait.width / 2,
-            ['portrait.center.y']: that.data.portrait.y + that.data.portrait.height / 2,
+            ['portrait.center.y']: that.data.portrait.y + that.data.portrait.height / 2
         })
         this.draw()
     },
