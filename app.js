@@ -2,19 +2,34 @@
 App({
     onLaunch() {
         // 展示本地存储能力
-        const logs = wx.getStorageSync('logs') || []
-        logs.unshift(Date.now())
-        wx.setStorageSync('logs', logs)
-
-        // 登录
-        wx.login({
-            success: res => {
-                // 发送 res.code 到后台换取 openId, sessionKey, unionId
-            }
-        })
+        this.globalData.token = wx.getStorageSync('token') || null
+        console.log(this.globalData.token)
+        const that = this
+        if (!this.globalData.token) {
+            wx.login({
+                success(res) {
+                    if (res.code) {
+                        console.log(res.code)
+                        wx.request({
+                            url: `${that.globalData.apiUrl}/login`,
+                            data: {
+                                code: res.code
+                            },
+                            success(res) {
+                                wx.setStorageSync('token', res.token)
+                            }
+                        })
+                    } else {
+                        console.log(res.errMsg)
+                    }
+                }
+            })
+        }
     },
+
     globalData: {
-        userInfo: null
+        token: null,
+        apiUrl: '192.168.0.0.1'
     },
 
     /**
@@ -29,7 +44,8 @@ App({
                     success(res) {
                         successes(res)
                         resolve(res)
-                    }, fail(res) {
+                    },
+                    fail(res) {
                         unSuccesses(res)
                         reject(res)
                     }

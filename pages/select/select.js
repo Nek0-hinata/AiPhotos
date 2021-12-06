@@ -29,7 +29,6 @@ Page({
         let that = this
         wx.chooseImage({
             count: 1,
-            sizeType: ['original'],
             success(res) {
                 const tempFiles = res.tempFilePaths[0]
                 if (e.mark.style == 0) {
