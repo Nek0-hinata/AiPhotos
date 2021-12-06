@@ -2,29 +2,29 @@
 App({
     onLaunch() {
         // 展示本地存储能力
-        this.globalData.token = wx.getStorageSync('token') || null
-        console.log(this.globalData.token)
-        const that = this
-        if (!this.globalData.token) {
-            wx.login({
-                success(res) {
-                    if (res.code) {
-                        console.log(res.code)
-                        wx.request({
-                            url: `${that.globalData.apiUrl}/login`,
-                            data: {
-                                code: res.code
-                            },
-                            success(res) {
-                                wx.setStorageSync('token', res.token)
-                            }
-                        })
-                    } else {
-                        console.log(res.errMsg)
-                    }
-                }
-            })
-        }
+        // this.globalData.token = wx.getStorageSync('token') || null
+        // console.log(this.globalData.token)
+        // const that = this
+        // if (!this.globalData.token) {
+        //     wx.login({
+        //         success(res) {
+        //             if (res.code) {
+        //                 console.log(res.code)
+        //                 wx.request({
+        //                     url: `${that.globalData.apiUrl}/login`,
+        //                     data: {
+        //                         code: res.code
+        //                     },
+        //                     success(res) {
+        //                         wx.setStorageSync('token', res.token)
+        //                     }
+        //                 })
+        //             } else {
+        //                 console.log(res.errMsg)
+        //             }
+        //         }
+        //     })
+        // }
     },
 
     globalData: {

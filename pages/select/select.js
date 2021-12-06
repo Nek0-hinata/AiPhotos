@@ -1,3 +1,5 @@
+import request from '../../utils/netTools.js'
+
 Page({
     data: {
         portrait: {
@@ -62,14 +64,23 @@ Page({
      */
     Start: function () {
         const that = this
+        if (!that.data.Selected.filter(ele => ele == true).length) {
+            wx.showToast({
+                title: '请选择帽子',
+                icon: 'error'
+            })
+            return
+        }
         const getImageInfo = getApp().promixify(wx.getImageInfo)
         Promise.all(
-            [that.data.portrait, that.data.bg].map(obj => getImageInfo(
-                {
+            [that.data.portrait, that.data.bg].map(obj => getImageInfo({
                     src: obj.url
                 },
                 res => {
-                    const {width, height} = res
+                    const {
+                        width,
+                        height
+                    } = res
                     console.log(width, height)
                     that.getScale(width, height)
                         .then(res => {
@@ -90,9 +101,13 @@ Page({
                     wx.showToast({
                         title: '出现错误啦'
                     })
-                })
-            )
+                }))
         ).then(res => {
+            Promise.all([
+                that.data.portrait.url,
+                that.data.bg.url,
+                `/statics/hat${that.data.Selected.findIndex(value => value == true) + 1}.png`
+            ])
             wx.navigateTo({
                 url: '/pages/photo/photo',
                 success(res) {
@@ -119,5 +134,4 @@ Page({
             })
         })
     }
-})
-;
+});
