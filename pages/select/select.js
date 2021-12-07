@@ -1,4 +1,4 @@
-import request from '../../utils/netTools.js'
+import Auth from '../../utils/netTools.js'
 
 Page({
     data: {
@@ -102,12 +102,109 @@ Page({
                         title: '出现错误啦'
                     })
                 }))
-        ).then(res => {
-            Promise.all([
-                that.data.portrait.url,
-                that.data.bg.url,
-                `/statics/hat${that.data.Selected.findIndex(value => value == true) + 1}.png`
-            ])
+        ).then(values => {
+            const upload = getApp().promixify(wx.uploadFile)
+            let P1 = upload({
+                url: `${getApp().globalData.apiUrl}/upload-fore`,
+                filePath: that.data.portrait.url,
+                header: {
+                    'token': Auth.getToken()
+                },
+                formData: {
+                    'hat': that.data.Selected.findIndex(value => value == true)
+                }
+            }, res => {
+                wx.downloadFile({
+                  url: res.data.url,
+                  success: res1 => {
+                      
+                  }
+                })
+            })
+            let P2 = upload({
+                url: `${getApp().globalData.apiUrl}/upload-back`,
+                filePath: that.data.bg.url,
+                header: {
+                    'token': Auth.getToken
+                }
+            })
+            // Promise.all([{
+            //         url: `${getApp().globalData.apiUrl}/upload-fore`,
+            //         filePath: that.data.portrait.url
+            //     },
+            //     {
+            //         url: `${getApp().globalData.apiUrl}/upload-back`,
+            //         filePath: that.data.bg.url
+            //     },
+            //     {
+            //         url: `${getApp().globalData.apiUrl}/back`,
+            //         filePath: `/statics/hat${that.data.Selected.findIndex(value => value == true) + 1}.png`
+            //     }
+            // ].map(obj => {
+            //     let Token = wx.getStorageSync('token')
+            //     let success = function(res) {
+            //         if (res.statusCode == 401) {
+            //             wx.login({
+            //                 success: res => {
+            //                     wx.request({
+            //                         url: `${getApp().globalData.apiUrl}/login`,
+            //                         data: {
+            //                             code: res.code
+            //                         },
+            //                         success: res => {
+            //                             wx.setStorageSync('token', res.data.token)
+            //                             upload({
+            //                                 url: obj.url,
+            //                                 filePath: obj.filePath,
+            //                                 name: 'file',
+            //                                 header: {
+            //                                     token: res.data.token
+            //                                 }
+            //                             })
+            //                         }
+            //                     })
+            //                 }
+            //             })
+            //         }
+            //     }
+            //     if (!Token) {
+            //         wx.login({
+            //             success: res => {
+            //                 wx.request({
+            //                     url: `${getApp().globalData.apiUrl}/login`,
+            //                     data: {
+            //                         code: res.code
+            //                     },
+            //                     success: res => {
+            //                         wx.setStorageSync('token', res.data.token)
+            //                         upload({
+            //                             url: obj.url,
+            //                             filePath: obj.filePath,
+            //                             name: 'file',
+            //                             header: {
+            //                                 token: res.data.token
+            //                             }
+            //                         })
+            //                     }
+            //                 })
+            //             }
+            //         })
+            //     } else {
+            //         upload({
+            //             url: obj.url,
+            //             filePath: obj.filePath,
+            //             name: 'file',
+            //             header: {
+            //                 token: Token
+            //             }
+            //         })
+            //     }
+            //     upload({
+            //         url: obj.url,
+            //         filePath: obj.filePath,
+            //         name: 'pic'
+            //     })
+            // }))
             wx.navigateTo({
                 url: '/pages/photo/photo',
                 success(res) {

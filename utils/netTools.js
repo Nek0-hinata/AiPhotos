@@ -131,4 +131,9 @@ function request(options = {}, needToken = true, ...params) {
   }
 }
 
-export default request
+let Auth = {
+  request: request,
+  getToken: getToken
+}
+
+export default Auth
