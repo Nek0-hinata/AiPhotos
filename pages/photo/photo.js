@@ -14,10 +14,10 @@ Page({
             data.test.x = 10
             data.test.y = 10
             //图片缩放比例
-            data.test.scale = 2
+            // data.test.scale = 2
             //图像长宽
-            data.test.width /= data.test.scale
-            data.test.height /= data.test.scale
+            // data.test.width /= data.test.scale
+            // data.test.height /= data.test.scale
             //图像旋转角度
             data.test.rotate = 0
             //点击时手指坐标

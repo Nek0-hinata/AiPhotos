@@ -154,31 +154,30 @@ Page({
                                                         width,
                                                         height
                                                     } = that.data.bg
-                                                    that.getScale(width, height)
-                                                        .then(res5 => {
-                                                            let scale = res5
-                                                            that.setData({
-                                                                'bgScale': scale
-                                                            })
-                                                            that.setData({
-                                                                [`bg.width`]: width / scale,
-                                                                [`bg.height`]: height / scale,
-                                                                [`portrait.width`]: width / scale,
-                                                                [`bg.height`]: height / scale
-                                                            })
-                                                            wx.navigateTo({
-                                                                url: '/pages/photo/photo',
-                                                                success(res) {
-                                                                    res.eventChannel.emit('size', {
-                                                                        data: that.data.bg,
-                                                                        test: that.data.portrait,
-                                                                        bgScale: that.data.bgScale
-                                                                    })
-                                                                }
-                                                            })
-                                                        }).catch(err => {
-                                                            console.log(err)
+                                                    that.getScale(width, height).then(res5 => {
+                                                        let scale = res5
+                                                        that.setData({
+                                                            'bgScale': scale
                                                         })
+                                                        that.setData({
+                                                            [`bg.width`]: width / scale,
+                                                            [`bg.height`]: height / scale,
+                                                            [`portrait.width`]: width / scale,
+                                                            [`bg.height`]: height / scale
+                                                        })
+                                                        wx.navigateTo({
+                                                            url: '/pages/photo/photo',
+                                                            success(res) {
+                                                                res.eventChannel.emit('size', {
+                                                                    data: that.data.bg,
+                                                                    test: that.data.portrait,
+                                                                    bgScale: that.data.bgScale
+                                                                })
+                                                            }
+                                                        })
+                                                    }).catch(err => {
+                                                        console.log(err)
+                                                    })
                                                 })
                                         }
                                     }
