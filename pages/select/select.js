@@ -105,7 +105,6 @@ Page({
                 title: '网络失联啦',
                 icon: 'error'
             })
-            console.log(res)
         })
         let P2 = upload({
             url: `${getApp().globalData.apiUrl}/upload-back`,
@@ -113,6 +112,13 @@ Page({
             header: {
                 'token': Auth.getToken
             }
+        }, () => {
+
+        }, res => {
+            wx.showToast({
+                title: '网络失联啦',
+                icon: 'error'
+            })
         })
         Promise.all([P1, P2])
             .then(values => {
@@ -132,51 +138,47 @@ Page({
                                     success: res1 => {
                                         if (res1.statusCode == 200) {
                                             that.setData({
-                                                'portrait.url': tempFilePaths || filePath
+                                                'portrait.url': tempFilePaths,
+                                                'bgScale': null
                                             })
                                             Promise.all(
                                                 [that.data.portrait, that.data.bg].map(obj => getImageInfo({
                                                     src: obj.url
-                                                }, res2 => {
+                                                }, res => { }, res => {
+                                                    wx.showToast({
+                                                        title: '获取图片失败'
+                                                    })
+                                                })
+                                                )).then(res4 => {
                                                     const {
                                                         width,
                                                         height
-                                                    } = res
-                                                    console.log(width, height)
+                                                    } = that.data.bg
                                                     that.getScale(width, height)
-                                                        .then(res3 => {
-                                                            let scale = res3
+                                                        .then(res5 => {
+                                                            let scale = res5
                                                             that.setData({
                                                                 'bgScale': scale
                                                             })
                                                             that.setData({
-                                                                [`${obj.name}.width`]: width / scale,
-                                                                [`${obj.name}.height`]: height / scale
+                                                                [`bg.width`]: width / scale,
+                                                                [`bg.height`]: height / scale,
+                                                                [`portrait.width`]: width / scale,
+                                                                [`bg.height`]: height / scale
                                                             })
+                                                            wx.navigateTo({
+                                                                url: '/pages/photo/photo',
+                                                                success(res) {
+                                                                    res.eventChannel.emit('size', {
+                                                                        data: that.data.bg,
+                                                                        test: that.data.portrait,
+                                                                        bgScale: that.data.bgScale
+                                                                    })
+                                                                }
+                                                            })
+                                                        }).catch(err => {
+                                                            console.log(err)
                                                         })
-                                                        .catch(err => {
-                                                            wx.showToast({
-                                                                title: err
-                                                            })
-                                                        })
-                                                }, res => {
-                                                    wx.showToast({
-                                                        title: '出现错误啦'
-                                                    })
-                                                }
-                                                ))
-                                            )
-                                                .then(res4 => {
-                                                    wx.navigateTo({
-                                                        url: '/pages/photo/photo',
-                                                        success(res) {
-                                                            res.eventChannel.emit('size', {
-                                                                data: that.data.bg,
-                                                                test: that.data.portrait,
-                                                                bgScale: that.data.bgScale
-                                                            })
-                                                        }
-                                                    })
                                                 })
                                         }
                                     }
