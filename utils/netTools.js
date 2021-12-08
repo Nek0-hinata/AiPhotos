@@ -16,7 +16,7 @@ function requestP(options = {}, ...params) {
   } = options
   return new Promise((res, rej) => {
     wx.request(Object.assign({}, ...params, {
-      url: `${app.apiUrl}${url}`,
+      url: `${app.globalData.apiUrl}${url}`,
       data: data,
       method: method || 'GET',
       success: res1 => {
@@ -40,7 +40,7 @@ function Login() {
       success: res1 => {
         if (res1.code) {
            requestP({
-             url: `${app.apiUrl}/login`,
+             url: `/login`,
              data: {
                code: res1.code
              },

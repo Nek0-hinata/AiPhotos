@@ -41,11 +41,11 @@ App({
         return (options, successes, unSuccesses, ...params) => {
             return new Promise((resolve, reject) => {
                 api(Object.assign({}, options, {
-                    success(res) {
+                    success: (res) => {
                         successes(res)
                         resolve(res)
                     },
-                    fail(res) {
+                    fail: (res) => {
                         unSuccesses(res)
                         reject(res)
                     }

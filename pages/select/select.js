@@ -65,9 +65,9 @@ Page({
      */
     Start: function () {
         const that = this
-        if (!that.data.Selected.filter(ele => ele == true).length) {
+        if (that.data.portrait.url == '/statics/add2.png') {
             wx.showToast({
-                title: '请选择帽子',
+                title: '请选择人像',
                 icon: 'error'
             })
             return
@@ -79,11 +79,12 @@ Page({
             })
             return
         }
-        if (that.data.portrait.url == '/statics/add2.png') {
+        if (!that.data.Selected.filter(ele => ele == true).length) {
             wx.showToast({
-                title: '请选择人像',
+                title: '请选择帽子',
                 icon: 'error'
             })
+            return
         }
         const getImageInfo = getApp().promixify(wx.getImageInfo)
         const upload = getApp().promixify(wx.uploadFile)
@@ -95,7 +96,16 @@ Page({
             },
             formData: {
                 'hat': that.data.Selected.findIndex(value => value == true)
-            }
+            },
+            name: 'file'
+        }, res => {
+
+        }, res => {
+            wx.showToast({
+                title: '网络失联啦',
+                icon: 'error'
+            })
+            console.log(res)
         })
         let P2 = upload({
             url: `${getApp().globalData.apiUrl}/upload-back`,
@@ -177,6 +187,12 @@ Page({
                 } else {
                     //图片下载失败
                 }
+            })
+            .catch(res => {
+                wx.showToast({
+                    title: '网络出错啦',
+                    icon: 'error'
+                })
             })
     },
 
