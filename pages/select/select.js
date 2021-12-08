@@ -21,7 +21,8 @@ Page({
             false
         ],
         isSelectColor: '#AF601A',
-        isNotSelectColor: '#fdd62f'
+        isNotSelectColor: '#fdd62f',
+        bgScale: undefined
     },
     onLoad: function (options) {
 
@@ -71,150 +72,112 @@ Page({
             })
             return
         }
+        if (that.data.bg.url == '/statics/add1.png') {
+            wx.showToast({
+                title: '请选择背景图',
+                icon: 'error'
+            })
+            return
+        }
+        if (that.data.portrait.url == '/statics/add2.png') {
+            wx.showToast({
+                title: '请选择人像',
+                icon: 'error'
+            })
+        }
         const getImageInfo = getApp().promixify(wx.getImageInfo)
-        Promise.all(
-            [that.data.portrait, that.data.bg].map(obj => getImageInfo({
-                    src: obj.url
-                },
-                res => {
-                    const {
-                        width,
-                        height
-                    } = res
-                    console.log(width, height)
-                    that.getScale(width, height)
-                        .then(res => {
-                            let scale = res
-                            console.log(scale)
-                            that.setData({
-                                [`${obj.name}.width`]: width / scale,
-                                [`${obj.name}.height`]: height / scale
-                            })
-                        })
-                        .catch(res => {
-                            wx.showToast({
-                                title: res
-                            })
-                        })
-                },
-                res => {
-                    wx.showToast({
-                        title: '出现错误啦'
-                    })
-                }))
-        ).then(values => {
-            const upload = getApp().promixify(wx.uploadFile)
-            let P1 = upload({
-                url: `${getApp().globalData.apiUrl}/upload-fore`,
-                filePath: that.data.portrait.url,
-                header: {
-                    'token': Auth.getToken()
-                },
-                formData: {
-                    'hat': that.data.Selected.findIndex(value => value == true)
-                }
-            }, res => {
-                wx.downloadFile({
-                  url: res.data.url,
-                  success: res1 => {
-                      
-                  }
-                })
-            })
-            let P2 = upload({
-                url: `${getApp().globalData.apiUrl}/upload-back`,
-                filePath: that.data.bg.url,
-                header: {
-                    'token': Auth.getToken
-                }
-            })
-            // Promise.all([{
-            //         url: `${getApp().globalData.apiUrl}/upload-fore`,
-            //         filePath: that.data.portrait.url
-            //     },
-            //     {
-            //         url: `${getApp().globalData.apiUrl}/upload-back`,
-            //         filePath: that.data.bg.url
-            //     },
-            //     {
-            //         url: `${getApp().globalData.apiUrl}/back`,
-            //         filePath: `/statics/hat${that.data.Selected.findIndex(value => value == true) + 1}.png`
-            //     }
-            // ].map(obj => {
-            //     let Token = wx.getStorageSync('token')
-            //     let success = function(res) {
-            //         if (res.statusCode == 401) {
-            //             wx.login({
-            //                 success: res => {
-            //                     wx.request({
-            //                         url: `${getApp().globalData.apiUrl}/login`,
-            //                         data: {
-            //                             code: res.code
-            //                         },
-            //                         success: res => {
-            //                             wx.setStorageSync('token', res.data.token)
-            //                             upload({
-            //                                 url: obj.url,
-            //                                 filePath: obj.filePath,
-            //                                 name: 'file',
-            //                                 header: {
-            //                                     token: res.data.token
-            //                                 }
-            //                             })
-            //                         }
-            //                     })
-            //                 }
-            //             })
-            //         }
-            //     }
-            //     if (!Token) {
-            //         wx.login({
-            //             success: res => {
-            //                 wx.request({
-            //                     url: `${getApp().globalData.apiUrl}/login`,
-            //                     data: {
-            //                         code: res.code
-            //                     },
-            //                     success: res => {
-            //                         wx.setStorageSync('token', res.data.token)
-            //                         upload({
-            //                             url: obj.url,
-            //                             filePath: obj.filePath,
-            //                             name: 'file',
-            //                             header: {
-            //                                 token: res.data.token
-            //                             }
-            //                         })
-            //                     }
-            //                 })
-            //             }
-            //         })
-            //     } else {
-            //         upload({
-            //             url: obj.url,
-            //             filePath: obj.filePath,
-            //             name: 'file',
-            //             header: {
-            //                 token: Token
-            //             }
-            //         })
-            //     }
-            //     upload({
-            //         url: obj.url,
-            //         filePath: obj.filePath,
-            //         name: 'pic'
-            //     })
-            // }))
-            wx.navigateTo({
-                url: '/pages/photo/photo',
-                success(res) {
-                    res.eventChannel.emit('size', {
-                        data: that.data.bg,
-                        test: that.data.portrait
-                    })
-                }
-            })
+        const upload = getApp().promixify(wx.uploadFile)
+        let P1 = upload({
+            url: `${getApp().globalData.apiUrl}/upload-fore`,
+            filePath: that.data.portrait.url,
+            header: {
+                'token': Auth.getToken()
+            },
+            formData: {
+                'hat': that.data.Selected.findIndex(value => value == true)
+            }
         })
+        let P2 = upload({
+            url: `${getApp().globalData.apiUrl}/upload-back`,
+            filePath: that.data.bg.url,
+            header: {
+                'token': Auth.getToken
+            }
+        })
+        Promise.all([P1, P2])
+            .then(values => {
+                if (values.every(value => value.statusCode == 200)) {
+                    wx.request({
+                        url: `${getApp().globalData.apiUrl}/start`,
+                        header: {
+                            'token': Auth.getToken
+                        },
+                        success: res => {
+                            if (res.statusCode == 200) {
+                                wx.downloadFile({
+                                    url: res.data.url,
+                                    header: {
+                                        'token': Auth.getToken
+                                    },
+                                    success: res1 => {
+                                        if (res1.statusCode == 200) {
+                                            that.setData({
+                                                'portrait.url': tempFilePaths || filePath
+                                            })
+                                            Promise.all(
+                                                [that.data.portrait, that.data.bg].map(obj => getImageInfo({
+                                                    src: obj.url
+                                                }, res2 => {
+                                                    const {
+                                                        width,
+                                                        height
+                                                    } = res
+                                                    console.log(width, height)
+                                                    that.getScale(width, height)
+                                                        .then(res3 => {
+                                                            let scale = res3
+                                                            that.setData({
+                                                                'bgScale': scale
+                                                            })
+                                                            that.setData({
+                                                                [`${obj.name}.width`]: width / scale,
+                                                                [`${obj.name}.height`]: height / scale
+                                                            })
+                                                        })
+                                                        .catch(err => {
+                                                            wx.showToast({
+                                                                title: err
+                                                            })
+                                                        })
+                                                }, res => {
+                                                    wx.showToast({
+                                                        title: '出现错误啦'
+                                                    })
+                                                }
+                                                ))
+                                            )
+                                                .then(res4 => {
+                                                    wx.navigateTo({
+                                                        url: '/pages/photo/photo',
+                                                        success(res) {
+                                                            res.eventChannel.emit('size', {
+                                                                data: that.data.bg,
+                                                                test: that.data.portrait,
+                                                                bgScale: that.data.bgScale
+                                                            })
+                                                        }
+                                                    })
+                                                })
+                                        }
+                                    }
+                                })
+                            }
+                        }
+                    })
+                } else {
+                    //图片下载失败
+                }
+            })
     },
 
     getScale: function (width, height) {
