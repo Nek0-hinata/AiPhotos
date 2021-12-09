@@ -1,6 +1,6 @@
 const that = this
 const app = getApp()
-let loginQueue = []
+const loginQueue = []
 let isLogin = false
 
 /**
@@ -8,7 +8,7 @@ let isLogin = false
  * @param {url, data, method} options 输入url，data，以及method
  * @param  {...any} params 输入其他变量
  */
-function requestP(options = {}, ...params) {
+function requestP (options = {}, ...params) {
   const {
     url,
     data,
@@ -34,25 +34,25 @@ function requestP(options = {}, ...params) {
 /**
  * @returns 返回登录期约
  */
-function Login() {
-  return new Promise ((res, rej) => {
+function Login () {
+  return new Promise((res, rej) => {
     wx.login({
       success: res1 => {
         if (res1.code) {
-           requestP({
-             url: `/login`,
-             data: {
-               code: res1.code
-             },
-             method: 'POST'
-           })
-              .then(res2 => {
-                wx.setStorageSync('token', res2.data.token)
-                res(wx.getStorageSync('token'))
-              })
-              .catch(res2 => {
-                console.log(res2)
-              })
+          requestP({
+            url: '/login',
+            data: {
+              code: res1.code
+            },
+            method: 'POST'
+          })
+            .then(res2 => {
+              wx.setStorageSync('token', res2.data.token)
+              res(wx.getStorageSync('token'))
+            })
+            .catch(res2 => {
+              console.log(res2)
+            })
         } else {
           rej(res1)
         }
@@ -64,11 +64,11 @@ function Login() {
   })
 }
 
-function getToken() {
+function getToken () {
   return new Promise((res, rej) => {
     if (!wx.getStorageSync('token')) {
-      loginQueue.push({res, rej})
-      //登录锁
+      loginQueue.push({ res, rej })
+      // 登录锁
       if (!isLogin) {
         isLogin = true
         Login()
@@ -91,18 +91,18 @@ function getToken() {
   })
 }
 
-function isHttpSuccess(status) {
+function isHttpSuccess (status) {
   return status >= 200 && status < 300 || status == 304
 }
 
-function request(options = {}, needToken = true, ...params) {
+function request (options = {}, needToken = true, ...params) {
   if (needToken) {
-    return new Promise ((res, rej) => {
+    return new Promise((res, rej) => {
       getToken()
-        .then( res1 => {
+        .then(res1 => {
           requestP(options, {
             header: {
-              'token': res1
+              token: res1
             }
           })
             .then(res2 => {
@@ -112,7 +112,7 @@ function request(options = {}, needToken = true, ...params) {
                   .then(res3 => {
                     requestP(options, {
                       header: {
-                        'token': res3
+                        token: res3
                       }
                     })
                       .then(res)
@@ -131,7 +131,7 @@ function request(options = {}, needToken = true, ...params) {
   }
 }
 
-let Auth = {
+const Auth = {
   request: request,
   getToken: getToken
 }
