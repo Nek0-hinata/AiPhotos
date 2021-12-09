@@ -1,10 +1,13 @@
+import Auth from '../../utils/netTools'
+
 Page({
   data: {
     ctx: null,
     canvas: null,
     bg: null,
     portrait: null,
-    selected: true
+    selected: true,
+    bgScale: null
   },
   onLoad: function (options) {
     const that = this
@@ -18,6 +21,11 @@ Page({
       // 图像长宽
       data.test.width /= data.test.scale
       data.test.height /= data.test.scale
+      // 图片初始长宽
+      data.test.init = {
+        width: data.test.width,
+        height: data.test.height
+      }
       // 图像旋转角度
       data.test.rotate = 0
       // 点击时手指坐标
@@ -37,7 +45,8 @@ Page({
 
       that.setData({
         bg: data.data,
-        portrait: data.test
+        portrait: data.test,
+        bgScale: data.bgScale
       })
     })
   },
@@ -210,6 +219,25 @@ Page({
     } else {
       return 3
     }
+  },
+
+  startMix: function (res) {
+    const that = this
+    const scale = this.data.portrait.width / this.data.portrait.init.width
+    Auth.request({
+      url: '/start-mix',
+      data: {
+        bgScale: that.data.bgScale,
+        scale: scale,
+        rotate: that.data.rotate * 180 / Math.PI
+      }
+    }).then(res => {
+      wx.showToast({
+        title: '成功'
+      })
+    }).catch(res => {
+      console.log(res)
+    })
   }
 
 })
