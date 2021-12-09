@@ -224,16 +224,23 @@ Page({
   startMix: function (res) {
     const that = this
     const scale = this.data.portrait.width / this.data.portrait.init.width
+    wx.showLoading({
+      title: '图片合成中'
+    })
     Auth.request({
       url: '/start-mix',
       data: {
-        bgScale: that.data.bgScale,
-        scale: scale,
-        rotate: that.data.rotate * 180 / Math.PI
+        bgScale: 1 / that.data.bgScale,
+        scale: 1 / scale,
+        rotate: that.data.rotate * 180 / Math.PI,
+        center: that.data.portrait.center
       }
     }).then(res => {
-      wx.showToast({
-        title: '成功'
+      wx.previewImage({
+        urls: res.data.urls,
+        complete (res1) {
+          wx.hideLoading()
+        }
       })
     }).catch(res => {
       console.log(res)

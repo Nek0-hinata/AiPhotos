@@ -34,7 +34,7 @@ Page({
       count: 1,
       success (res) {
         const tempFiles = res.tempFilePaths[0]
-        if (e.mark.style == 0) {
+        if (e.mark.style === 0) {
           that.setData({
             'portrait.url': tempFiles
           })
@@ -65,21 +65,21 @@ Page({
    */
   Start: function () {
     const that = this
-    if (that.data.portrait.url == '/statics/add2.png') {
+    if (that.data.portrait.url === '/statics/add2.png') {
       wx.showToast({
         title: '请选择人像',
         icon: 'error'
       })
       return
     }
-    if (that.data.bg.url == '/statics/add1.png') {
+    if (that.data.bg.url === '/statics/add1.png') {
       wx.showToast({
         title: '请选择背景图',
         icon: 'error'
       })
       return
     }
-    if (!that.data.Selected.filter(ele => ele == true).length) {
+    if (!that.data.Selected.filter(ele => ele === true).length) {
       wx.showToast({
         title: '请选择帽子',
         icon: 'error'
@@ -95,7 +95,7 @@ Page({
         token: Auth.getToken()
       },
       formData: {
-        hat: that.data.Selected.findIndex(value => value == true)
+        hat: that.data.Selected.findIndex(value => value === true)
       },
       name: 'file'
     }, res => {
@@ -122,21 +122,21 @@ Page({
     })
     Promise.all([P1, P2])
       .then(values => {
-        if (values.every(value => value.statusCode == 200)) {
+        if (values.every(value => value.statusCode === 200)) {
           wx.request({
             url: `${getApp().globalData.apiUrl}/start`,
             header: {
               token: Auth.getToken
             },
             success: res => {
-              if (res.statusCode == 200) {
+              if (res.statusCode === 200) {
                 wx.downloadFile({
                   url: res.data.url,
                   header: {
                     token: Auth.getToken
                   },
                   success: res1 => {
-                    if (res1.statusCode == 200) {
+                    if (res1.statusCode === 200) {
                       that.setData({
                         'portrait.url': res1.tempFilePath,
                         bgScale: null
