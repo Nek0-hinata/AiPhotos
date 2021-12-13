@@ -25,11 +25,28 @@ App({
     //         }
     //     })
     // }
+    // const that = this
+    // console.log(Auth.getToken())
+    // wx.login({
+    //   success(res) {
+    //     wx.request({
+    //       url: `http://42.193.126.196:9000/login`,
+    //       data: {
+    //         code: res.code
+    //       },
+    //       method: 'POST',
+    //       complete(res1) {
+    //         console.log(res.code)
+    //       }
+    //     })
+    //   }
+    // })
+
   },
 
   globalData: {
     token: null,
-    apiUrl: '192.168.0.0.1'
+    apiUrl: 'http://42.193.126.196:9000'
   },
 
   /**

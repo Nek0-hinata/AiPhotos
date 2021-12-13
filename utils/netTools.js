@@ -1,7 +1,7 @@
 const that = this
 const app = getApp()
 const loginQueue = []
-let isLogin = false
+const isLogin = false
 
 /**
  * 请求的一个简单封装
@@ -9,14 +9,14 @@ let isLogin = false
  * @param  {...any} params 输入其他变量
  */
 function requestP (options = {}, ...params) {
-  const {
-    url,
-    data,
-    method
-  } = options
   return new Promise((res, rej) => {
+    const {
+      url,
+      data,
+      method
+    } = options
     wx.request(Object.assign({}, ...params, {
-      url: `${app.globalData.apiUrl}${url}`,
+      url: `${getApp().globalData.apiUrl}${url}`,
       data: data,
       method: method || 'GET',
       success: res1 => {
@@ -65,31 +65,51 @@ function Login () {
 }
 
 function getToken () {
-  return new Promise((res, rej) => {
-    if (!wx.getStorageSync('token')) {
-      loginQueue.push({ res, rej })
-      // 登录锁
-      if (!isLogin) {
-        isLogin = true
-        Login()
-          .then(res1 => {
-            isLogin = false
-            while (loginQueue.length) {
-              loginQueue.shift().res(res1)
-            }
-          })
-          .catch(err => {
-            isLogin = false
-            while (loginQueue.length) {
-              loginQueue.shift().rej(err)
-            }
-          })
-      }
+  return new Promise((resolve, reject) => {
+    const token = wx.getStorageSync('token')
+    if (!token) {
+      Login().then(res1 => {
+        console.log('getToken()', res1)
+        resolve(res1)
+      })
+        .catch(res1 => {
+          console.log('getToken()fail', res1)
+          reject(res1)
+        })
     } else {
-      res(wx.getStorageSync('token'))
+      resolve(token)
     }
   })
 }
+
+// function getToken () {
+//   return new Promise((res, rej) => {
+//     if (!wx.getStorageSync('token')) {
+//       loginQueue.push({ res, rej })
+//       // 登录锁
+//       if (!isLogin) {
+//         isLogin = true
+//         Login()
+//           .then(res1 => {
+//             isLogin = false
+//             console.log(loginQueue)
+//             while (loginQueue.length) {
+//               loginQueue.shift().res(res1)
+//             }
+//           })
+//           .catch(err => {
+//             console.log('dsa',loginQueue)
+//             isLogin = false
+//             while (loginQueue.length) {
+//               loginQueue.shift().rej(err)
+//             }
+//           })
+//       }
+//     } else {
+//       res(wx.getStorageSync('token'))
+//     }
+//   })
+// }
 
 function isHttpSuccess (status) {
   return status >= 200 && status < 300 || status == 304
@@ -116,15 +136,24 @@ function request (options = {}, needToken = true, ...params) {
                       }
                     })
                       .then(res)
-                      .catch(rej)
+                      .catch(res => {
+                        console.log(res)
+                        rej()
+                      })
                   })
               } else {
                 res(res2)
               }
             })
-            .catch(rej)
+            .catch(res => {
+              console.log(res)
+              rej()
+            })
         })
-        .catch(rej)
+        .catch(res => {
+          console.log(res)
+          rej()
+        })
     })
   } else {
     return requestP(options, ...params)

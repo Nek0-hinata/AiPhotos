@@ -74,7 +74,7 @@ Page({
    * 根据appData中的值绘制图片
    * 绘制时按照x，y原坐标进行绘制
    */
-  draw: function () {
+  drawImg: function () {
     const that = this
     const canvas = that.data.canvas
     const bg = canvas.createImage()
@@ -116,6 +116,24 @@ Page({
       person.src = P?.url
     }
     bg.src = that.data.bg?.url
+  },
+
+  throttle: function (func, time) {
+    let timer = null
+    return function () {
+      if (timer) {
+        return
+      }
+      timer = setTimeout(() => {
+        func.apply(this, arguments)
+        timer = null
+      }, time)
+    }
+  },
+
+  draw: function () {
+    const that = this
+    this.throttle(that.drawImg, 16)
   },
 
   start: function (e) {
