@@ -1,4 +1,5 @@
 // app.js
+
 App({
   onLaunch () {
     // 展示本地存储能力
@@ -26,7 +27,6 @@ App({
     //     })
     // }
     // const that = this
-    // console.log(Auth.getToken())
     // wx.login({
     //   success(res) {
     //     wx.request({
@@ -37,11 +37,12 @@ App({
     //       method: 'POST',
     //       complete(res1) {
     //         console.log(res.code)
+    //         console.log(res1)
     //       }
     //     })
     //   }
     // })
-
+    // Auth.request({}, this.promixify).then(res => {})
   },
 
   globalData: {
