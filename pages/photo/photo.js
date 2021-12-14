@@ -74,7 +74,7 @@ Page({
    * 根据appData中的值绘制图片
    * 绘制时按照x，y原坐标进行绘制
    */
-  drawImg: function () {
+  draw: function () {
     const that = this
     const canvas = that.data.canvas
     const bg = canvas.createImage()
@@ -131,10 +131,10 @@ Page({
     }
   },
 
-  draw: function () {
-    const that = this
-    this.throttle(that.drawImg, 16)
-  },
+  // draw: function () {
+  //   const that = this
+  //   this.throttle(that.drawImg, 16)
+  // },
 
   start: function (e) {
     const { x, y } = e.touches[0]

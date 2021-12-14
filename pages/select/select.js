@@ -28,6 +28,20 @@ Page({
 
   },
 
+  // onShow: function(options) {
+  //   const that = this
+  //   that.setData({
+  //     ['bg.url']: '/statics/add1.png',
+  //     ['portrait.url']: '/statics/add2.png',
+  //     Selected: [
+  //       false,
+  //       false,
+  //       false,
+  //       false
+  //     ]
+  //   })
+  // },
+
   SelectPhoto: function (e) {
     const that = this
     wx.chooseImage({
@@ -94,7 +108,8 @@ Page({
     const P1 = Auth.request({
       url: '/upload-fore',
       filePath: that.data.portrait.url,
-      name: 'file'
+      name: 'file',
+      timeout: 60000
     }, wx.uploadFile)
     // const P1 = upload({
     //   url: `${getApp().globalData.apiUrl}/upload-fore`,
@@ -116,7 +131,8 @@ Page({
     const P2 = Auth.request({
       url: '/upload-back',
       filePath: that.data.bg.url,
-      name: 'file'
+      name: 'file',
+      timeout: 60000
     }, wx.uploadFile)
     // const P2 = upload({
     //   url: `${getApp().globalData.apiUrl}/upload-back`,
@@ -137,17 +153,19 @@ Page({
       .then(values => {
         // let token = null
         // Auth.getToken().then(res => token = res)
+        console.log(values.every(value => value.statusCode == 200))
         if (values.every(value => value.statusCode == 200)) {
           Auth.request({
-            url: `${getApp().globalData.apiUrl}/start`,
+            url: `/start`,
             data: {
               hat: that.data.Selected.findIndex(value => value == true)
             },
             method: 'POST'
           }, wx.request).then(res => {
             if (res.statusCode == '200') {
+              console.log(`${getApp().globalData.apiUrl}/${res.data.url}`)
               wx.downloadFile({
-                url: res.data.url,
+                url: `${getApp().globalData.apiUrl}/${res.data.url}`,
                 success: res1 => {
                   if (res1.statusCode == '200') {
                     that.setData({
@@ -158,6 +176,10 @@ Page({
                       [that.data.portrait, that.data.bg].map(obj => getImageInfo({
                         src: obj.url
                       }, res => {
+                        that.setData({
+                          [`${obj.name}.height`]: res.height,
+                          [`${obj.name}.width`]: res.width
+                        })
                       }, res => {
                         wx.showToast({
                           title: '获取图片失败'
