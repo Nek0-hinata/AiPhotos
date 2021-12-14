@@ -123,11 +123,11 @@ function request (options = {}, api, needToken = true, ...params) {
     return new Promise((res, rej) => {
       getToken()
         .then(res1 => {
-          requestP(options, api, {
-            header: {
-              token: res1
-            }
-          })
+          if (!options.hasOwnProperty('header')) {
+            options.header = {}
+          }
+          options.header.token = res1
+          requestP(options, api)
             .then(res2 => {
               console.log(res2.statusCode)
               if (res2.statusCode == 401) {
@@ -143,11 +143,11 @@ function request (options = {}, api, needToken = true, ...params) {
                       .then(res3 => {
                         console.log(res3)
                         wx.setStorageSync('token', res3.data.token)
-                        requestP(options, api, {
-                          header: {
-                            token: res3.data.token
-                          }
-                        })
+                        if (!options.hasOwnProperty('header')) {
+                          options.header = {}
+                        }
+                        options.header.token = res3.data.token
+                        requestP(options, api)
                           .then(res4 => {
                             res(res4)
                           })

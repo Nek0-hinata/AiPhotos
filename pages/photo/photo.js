@@ -83,8 +83,6 @@ Page({
     const zoom = canvas.createImage()
     const c = that.data.ctx
     const P = that.data.portrait
-    that.data.portrait.x = Math.floor(that.data.portrait.x)
-    that.data.portrait.y = Math.floor(that.data.portrait.y)
     c.clearRect(0, 0, canvas.width, canvas.height)
     bg.onload = () => {
       person.onload = () => {
@@ -254,10 +252,13 @@ Page({
       data: {
         bgScale: 1 / that.data.bgScale,
         scale: 1 / scale,
-        rotate: that.data.portrait.rotate * 180 / Math.PI,
+        rotate: -that.data.portrait.rotate * 180 / Math.PI,
         center: that.data.portrait.center
       },
-      method: 'POST'
+      method: 'POST',
+      header: {
+        'Cache-Control': 'no-store'
+      }
     }, wx.request).then(res => {
       console.log('start-mix', res)
       console.log(`${getApp().globalData.apiUrl}/${res.data.url}`)
