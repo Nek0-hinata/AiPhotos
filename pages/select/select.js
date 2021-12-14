@@ -79,6 +79,9 @@ Page({
    */
   Start: function () {
     const that = this
+    wx.showLoading({
+      title: '图片上传中',
+    })
     // if (that.data.portrait.url === '/statics/add2.png') {
     //   wx.showToast({
     //     title: '请选择人像',
@@ -162,6 +165,12 @@ Page({
             },
             method: 'POST'
           }, wx.request).then(res => {
+            wx.hideLoading({
+              success: (res) => {},
+            })
+            wx.showLoading({
+              title: '图片合成中',
+            })
             if (res.statusCode == '200') {
               console.log(`${getApp().globalData.apiUrl}/${res.data.url}`)
               wx.downloadFile({
@@ -201,6 +210,9 @@ Page({
                           'portrait.width': that.data.portrait?.width / scale,
                           'portrait.height': that.data.portrait?.height / scale
                         })
+                        wx.hideLoading({
+                          success: (res) => {},
+                        })
                         wx.navigateTo({
                           url: '/pages/photo/photo',
                           success (res) {
@@ -212,25 +224,45 @@ Page({
                           }
                         })
                       }).catch(err => {
+                        failed()
                         console.log(err)
                       })
                     })
                       .catch(res4 => {
+                        failed()
                         console.log(res4)
                       })
                   }
+                },
+                fail() {
+                  failed()
                 }
               })
+            } else {
+              failed()
             }
           })
             .catch(res => {
+              failed()
               console.log(res)
             })
+        } else {
+          failed()
         }
       })
       .catch(res => {
+        failed()
         console.log(res)
       })
+      function failed() {
+        wx.hideLoading({
+          success: (res) => {},
+        })
+        wx.showToast({
+          title: '合成失败',
+          icon: 'error'
+        })
+      }
     //     wx.request({
     //       url: `${getApp().globalData.apiUrl}/start`,
     //       header: {

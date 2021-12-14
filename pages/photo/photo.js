@@ -83,6 +83,8 @@ Page({
     const zoom = canvas.createImage()
     const c = that.data.ctx
     const P = that.data.portrait
+    that.data.portrait.x = Math.floor(that.data.portrait.x)
+    that.data.portrait.y = Math.floor(that.data.portrait.y)
     c.clearRect(0, 0, canvas.width, canvas.height)
     bg.onload = () => {
       person.onload = () => {
@@ -119,14 +121,15 @@ Page({
   },
 
   throttle: function (func, time) {
-    let timer = null
+    let valid = true
     return function () {
-      if (timer) {
-        return
+      if (!valid) {
+        return false
       }
+      valid = false
       timer = setTimeout(() => {
-        func.apply(this, arguments)
-        timer = null
+        func()
+        valid = true
       }, time)
     }
   },
@@ -243,19 +246,31 @@ Page({
     const that = this
     const scale = this.data.portrait.width / this.data.portrait.init.width
     wx.showLoading({
-      title: '图片合成中'
+      title: '下载图片ing'
     })
+    console.log(that.data.portrait.rotate * 180 / Math.PI)
     Auth.request({
       url: '/start-mix',
       data: {
         bgScale: 1 / that.data.bgScale,
         scale: 1 / scale,
-        rotate: that.data.rotate * 180 / Math.PI,
+        rotate: that.data.portrait.rotate * 180 / Math.PI,
         center: that.data.portrait.center
-      }
-    }).then(res => {
+      },
+      method: 'POST'
+    }, wx.request).then(res => {
+      console.log('start-mix', res)
+      console.log(`${getApp().globalData.apiUrl}/${res.data.url}`)
+      let urls = []
+      urls.push(`${getApp().globalData.apiUrl}/${res.data.url}`)
       wx.previewImage({
-        urls: res.data.urls,
+        urls: urls,
+        success(res) {
+          console.log('success')
+        },
+        fail(res) {
+          console.log(res, 'fail')
+        },
         complete (res1) {
           wx.hideLoading()
         }

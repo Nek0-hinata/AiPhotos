@@ -131,7 +131,6 @@ function request (options = {}, api, needToken = true, ...params) {
             .then(res2 => {
               console.log(res2.statusCode)
               if (res2.statusCode == 401) {
-                console.log('dsafadsfsdsafsa')
                 wx.login({
                   success (resCode) {
                     requestP({
