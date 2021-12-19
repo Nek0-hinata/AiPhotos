@@ -12,7 +12,7 @@ Page({
   onLoad: function (options) {
     const that = this
     const eventChannel = this.getOpenerEventChannel()
-    eventChannel.on('size', data => {
+    eventChannel.once('size', data => {
       // 图片在画布上的真实坐标
       data.test.x = 10
       data.test.y = 10

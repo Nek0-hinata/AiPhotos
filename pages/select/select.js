@@ -25,7 +25,13 @@ Page({
     bgScale: undefined
   },
   onLoad: function (options) {
-
+    const event = this.getOpenerEventChannel()
+    const that = this
+    event.on('num', data => {
+      that.setData({
+        method: data.num
+      })
+    })
   },
 
   // onShow: function(options) {
@@ -154,12 +160,13 @@ Page({
     // })
     Promise.all([P1, P2])
       .then(values => {
+        const myUrl = that.data.method == 0 ? '/start' : '/style'
         // let token = null
         // Auth.getToken().then(res => token = res)
         console.log(values.every(value => value.statusCode == 200))
         if (values.every(value => value.statusCode == 200)) {
           Auth.request({
-            url: '/start',
+            url: myUrl,
             data: {
               hat: that.data.Selected.findIndex(value => value == true) + 1
             },

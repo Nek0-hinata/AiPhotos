@@ -1,8 +1,13 @@
 <view class="page">
-    <view class="christmas" catch:tap="SwitchTo" mark:url="/camera/camera">
+    <view class="christmas" catch:tap="SwitchTo" mark:url="/camera/camera" data-num="0">
         <image src="/statics/background1.png" class="img" mode="aspectFill"></image>
         <view class="text">圣诞气氛照片合成器</view>
         <view class="node">导入人像及背景图一键get圣诞气氛照</view>
+    </view>
+    <view class="christmas" catch:tap="SwitchTo" mark:url="/camera/camera" data-num="1">
+        <image src="/statics/background1.png" class="img" mode="aspectFill"></image>
+        <view class="text">圣诞气氛照片合成器2</view>
+        <view class="node">导入人像及背景图一键get圣诞气氛照2</view>
     </view>
     <view class="about" catch:tap="SwitchTo" mark:url="/about/about">
         <image src="/statics/about.png" class="img"></image>
