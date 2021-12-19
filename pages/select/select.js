@@ -89,27 +89,27 @@ Page({
     wx.showLoading({
       title: '图片上传中'
     })
-    // if (that.data.portrait.url === '/statics/add2.png') {
-    //   wx.showToast({
-    //     title: '请选择人像',
-    //     icon: 'error'
-    //   })
-    //   return
-    // }
-    // if (that.data.bg.url === '/statics/add1.png') {
-    //   wx.showToast({
-    //     title: '请选择背景图',
-    //     icon: 'error'
-    //   })
-    //   return
-    // }
-    // if (!that.data.Selected.filter(ele => ele === true).length) {
-    //   wx.showToast({
-    //     title: '请选择帽子',
-    //     icon: 'error'
-    //   })
-    //   return
-    // }
+    if (that.data.portrait.url === '/statics/add2.png') {
+      wx.showToast({
+        title: '请选择人像',
+        icon: 'error'
+      })
+      return
+    }
+    if (that.data.bg.url === '/statics/add1.png') {
+      wx.showToast({
+        title: '请选择背景图',
+        icon: 'error'
+      })
+      return
+    }
+    if (that.data.method == 0 && !that.data.Selected.filter(ele => ele === true).length) {
+      wx.showToast({
+        title: '请选择帽子',
+        icon: 'error'
+      })
+      return
+    }
     const getImageInfo = getApp().promixify(wx.getImageInfo)
     // const upload = getApp().promixify(wx.uploadFile)
     // // Auth.getToken().then(res => {
@@ -181,75 +181,83 @@ Page({
               title: '图片合成中'
             })
             if (res.statusCode == '200') {
-              console.log(`${getApp().globalData.apiUrl}/${res.data.url}`)
-              wx.downloadFile({
-                url: `${getApp().globalData.apiUrl}/${res.data.url}`,
-                success: res1 => {
-                  if (res1.statusCode == '200') {
-                    that.setData({
-                      'portrait.url': res1.tempFilePath,
-                      bgScale: null
-                    })
-                    Promise.all(
-                      [that.data.portrait, that.data.bg].map(obj => getImageInfo({
-                        src: obj.url
-                      }, res => {
-                        that.setData({
-                          [`${obj.name}.height`]: res.height,
-                          [`${obj.name}.width`]: res.width
-                        })
-                      }, res => {
-                        wx.showToast({
-                          title: '获取图片失败'
-                        })
-                        console.log(res)
+              if (that.data.method == 1) {
+                const methodUrl = []
+                methodUrl.push(res.data.url)
+                wx.previewImage({
+                  urls: methodUrl
+                })
+              } else {
+              // console.log(`${getApp().globalData.apiUrl}/${res.data.url}`)
+                wx.downloadFile({
+                  url: `${getApp().globalData.apiUrl}/${res.data.url}`,
+                  success: res1 => {
+                    if (res1.statusCode == '200') {
+                      that.setData({
+                        'portrait.url': res1.tempFilePath,
+                        bgScale: null
                       })
-                      )).then(res4 => {
-                      const {
-                        width,
-                        height
-                      } = that.data.bg
-                      that.getScale(width, height).then(res5 => {
-                        const scale = res5
-                        that.setData({
-                          bgScale: scale
+                      Promise.all(
+                        [that.data.portrait, that.data.bg].map(obj => getImageInfo({
+                          src: obj.url
+                        }, res => {
+                          that.setData({
+                            [`${obj.name}.height`]: res.height,
+                            [`${obj.name}.width`]: res.width
+                          })
+                        }, res => {
+                          wx.showToast({
+                            title: '获取图片失败'
+                          })
+                          console.log(res)
                         })
-                        console.log(that.data.portrait.width)
-                        that.setData({
-                          'bg.width': width / scale,
-                          'bg.height': height / scale,
-                          'portrait.width': that.data.portrait.width / scale,
-                          'portrait.height': that.data.portrait.height / scale
+                        )).then(res4 => {
+                        const {
+                          width,
+                          height
+                        } = that.data.bg
+                        that.getScale(width, height).then(res5 => {
+                          const scale = res5
+                          that.setData({
+                            bgScale: scale
+                          })
+                          console.log(that.data.portrait.width)
+                          that.setData({
+                            'bg.width': width / scale,
+                            'bg.height': height / scale,
+                            'portrait.width': that.data.portrait.width / scale,
+                            'portrait.height': that.data.portrait.height / scale
+                          })
+                          wx.hideLoading({
+                            success: (res) => {
+                            }
+                          })
+                          wx.navigateTo({
+                            url: '/pages/photo/photo',
+                            success (res) {
+                              res.eventChannel.emit('size', {
+                                data: that.data.bg,
+                                test: that.data.portrait,
+                                bgScale: that.data.bgScale
+                              })
+                            }
+                          })
+                        }).catch(err => {
+                          failed()
+                          console.log(err)
                         })
-                        wx.hideLoading({
-                          success: (res) => {
-                          }
-                        })
-                        wx.navigateTo({
-                          url: '/pages/photo/photo',
-                          success (res) {
-                            res.eventChannel.emit('size', {
-                              data: that.data.bg,
-                              test: that.data.portrait,
-                              bgScale: that.data.bgScale
-                            })
-                          }
-                        })
-                      }).catch(err => {
-                        failed()
-                        console.log(err)
                       })
-                    })
-                      .catch(res4 => {
-                        failed()
-                        console.log(res4)
-                      })
+                        .catch(res4 => {
+                          failed()
+                          console.log(res4)
+                        })
+                    }
+                  },
+                  fail () {
+                    failed()
                   }
-                },
-                fail () {
-                  failed()
-                }
-              })
+                })
+              }
             } else {
               failed()
             }

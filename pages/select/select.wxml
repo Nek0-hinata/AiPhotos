@@ -1,14 +1,14 @@
 <view class="page">
     <view class="part" mark:style="0" catch:tap="SelectPhoto">
         <image src="{{portrait.url}}" class="img" mode="aspectFill"></image>
-        <view class="text">选择人像照</view>
+        <view class="text">{{method == 0 ? '选择人像图' : '选择原图'}}</view>
     </view>
     <view class="part" mark:style="1" catch:tap="SelectPhoto">
         <image src="{{bg.url}}" class="img" mode="aspectFill"></image>
-        <view class="text">选择背景图</view>
+        <view class="text">{{method == 0 ? '选择背景图' : '选择风格图'}}</view>
     </view>
     <button class="fin" catch:tap="Start">开始合成！</button>
-    <scroll-view class="endPart" scroll-x="true" enable-flex="true">
+    <scroll-view class="endPart" scroll-x="true" enable-flex="true" wx:if="{{method == 0}}">
         <view class="hatBtn" style="background-color:{{Selected[0] ? isSelectColor : isNotSelectColor }}" mark:hat="0"
               catch:tap="SelectHat">
             <image src="/statics/hat1.png" class="img"></image>
