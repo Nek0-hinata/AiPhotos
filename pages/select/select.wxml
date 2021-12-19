@@ -8,7 +8,7 @@
         <view class="text">选择背景图</view>
     </view>
     <button class="fin" catch:tap="Start">开始合成！</button>
-    <view class="endPart">
+    <scroll-view class="endPart" scroll-x="true" enable-flex="true">
         <view class="hatBtn" style="background-color:{{Selected[0] ? isSelectColor : isNotSelectColor }}" mark:hat="0" catch:tap="SelectHat">
             <image src="/statics/hat1.png" class="img"></image>
         </view>
@@ -21,5 +21,5 @@
         <view class="hatBtn" style="background-color:{{Selected[3] ? isSelectColor : isNotSelectColor }}" mark:hat="3" catch:tap="SelectHat">
             <image src="/statics/hat4.png" class="img"></image>
         </view>
-    </view>
+    </scroll-view>
 </view>
