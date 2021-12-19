@@ -183,9 +183,12 @@ Page({
             if (res.statusCode == '200') {
               if (that.data.method == 1) {
                 const methodUrl = []
-                methodUrl.push(res.data.url)
+                methodUrl.push(`${getApp().globalData.apiUrl}/${res.data.url}`)
                 wx.previewImage({
-                  urls: methodUrl
+                  urls: methodUrl,
+                  success (res) {
+                    wx.hideLoading()
+                  }
                 })
               } else {
               // console.log(`${getApp().globalData.apiUrl}/${res.data.url}`)
