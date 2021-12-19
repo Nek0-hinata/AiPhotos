@@ -37,9 +37,7 @@
 }
 .page .endPart .hatBtn {
   display: inline;
-  height: 100rpx;
-  width: 100rpx;
-  padding: 30rpx;
+  padding: 50rpx;
   margin: 10px;
   border-radius: 50%;
   z-index: -1;

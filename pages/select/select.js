@@ -18,6 +18,7 @@ Page({
       false,
       false,
       false,
+      false,
       false
     ],
     isSelectColor: '#AF601A',

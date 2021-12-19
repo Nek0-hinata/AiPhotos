@@ -9,17 +9,25 @@
     </view>
     <button class="fin" catch:tap="Start">开始合成！</button>
     <scroll-view class="endPart" scroll-x="true" enable-flex="true">
-        <view class="hatBtn" style="background-color:{{Selected[0] ? isSelectColor : isNotSelectColor }}" mark:hat="0" catch:tap="SelectHat">
+        <view class="hatBtn" style="background-color:{{Selected[0] ? isSelectColor : isNotSelectColor }}" mark:hat="0"
+              catch:tap="SelectHat">
             <image src="/statics/hat1.png" class="img"></image>
         </view>
-        <view class="hatBtn" style="background-color:{{Selected[1] ? isSelectColor : isNotSelectColor }}" mark:hat="1" catch:tap="SelectHat">
+        <view class="hatBtn" style="background-color:{{Selected[1] ? isSelectColor : isNotSelectColor }}" mark:hat="1"
+              catch:tap="SelectHat">
             <image src="/statics/hat2.png" class="img"></image>
         </view>
-        <view class="hatBtn" style="background-color:{{Selected[2] ? isSelectColor : isNotSelectColor }}" mark:hat="2" catch:tap="SelectHat">
+        <view class="hatBtn" style="background-color:{{Selected[2] ? isSelectColor : isNotSelectColor }}" mark:hat="2"
+              catch:tap="SelectHat">
             <image src="/statics/hat3.png" class="img"></image>
         </view>
-        <view class="hatBtn" style="background-color:{{Selected[3] ? isSelectColor : isNotSelectColor }}" mark:hat="3" catch:tap="SelectHat">
+        <view class="hatBtn" style="background-color:{{Selected[3] ? isSelectColor : isNotSelectColor }}" mark:hat="3"
+              catch:tap="SelectHat">
             <image src="/statics/hat4.png" class="img"></image>
+        </view>
+        <view class="hatBtn" style="background-color:{{Selected[4] ? isSelectColor : isNotSelectColor }}" mark:hat="4"
+              catch:tap="SelectHat">
+            <image src="/statics/hat5.png" class="img"></image>
         </view>
     </scroll-view>
 </view>
