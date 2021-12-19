@@ -1,15 +1,18 @@
+import Auth from '../../utils/netTools'
+
 Page({
   data: {
     ctx: null,
     canvas: null,
     bg: null,
     portrait: null,
-    selected: true
+    selected: true,
+    bgScale: null
   },
   onLoad: function (options) {
     const that = this
     const eventChannel = this.getOpenerEventChannel()
-    eventChannel.on('size', data => {
+    eventChannel.once('size', data => {
       // 图片在画布上的真实坐标
       data.test.x = 10
       data.test.y = 10
@@ -18,6 +21,11 @@ Page({
       // 图像长宽
       data.test.width /= data.test.scale
       data.test.height /= data.test.scale
+      // 图片初始长宽
+      data.test.init = {
+        width: data.test.width,
+        height: data.test.height
+      }
       // 图像旋转角度
       data.test.rotate = 0
       // 点击时手指坐标
@@ -37,7 +45,8 @@ Page({
 
       that.setData({
         bg: data.data,
-        portrait: data.test
+        portrait: data.test,
+        bgScale: data.bgScale
       })
     })
   },
@@ -108,6 +117,25 @@ Page({
     }
     bg.src = that.data.bg?.url
   },
+
+  throttle: function (func, time) {
+    let valid = true
+    return function () {
+      if (!valid) {
+        return false
+      }
+      valid = false
+      timer = setTimeout(() => {
+        func()
+        valid = true
+      }, time)
+    }
+  },
+
+  // draw: function () {
+  //   const that = this
+  //   this.throttle(that.drawImg, 16)
+  // },
 
   start: function (e) {
     const { x, y } = e.touches[0]
@@ -210,6 +238,50 @@ Page({
     } else {
       return 3
     }
+  },
+
+  startMix: function (res) {
+    const that = this
+    const scale = this.data.portrait.width / this.data.portrait.init.width
+    this.setData({
+      'portrait.scale': scale
+    })
+    wx.showLoading({
+      title: '下载图片ing'
+    })
+    console.log(that.data.portrait.rotate * 180 / Math.PI)
+    Auth.request({
+      url: '/start-mix',
+      data: {
+        bgScale: 1 / that.data.bgScale,
+        scale: scale,
+        rotate: -that.data.portrait.rotate * 180 / Math.PI,
+        center: that.data.portrait.center
+      },
+      method: 'POST',
+      header: {
+        'Cache-Control': 'no-store'
+      }
+    }, wx.request).then(res => {
+      console.log('start-mix', res)
+      console.log(`${getApp().globalData.apiUrl}/${res.data.url}`)
+      const urls = []
+      urls.push(`${getApp().globalData.apiUrl}/${res.data.url}`)
+      wx.previewImage({
+        urls: urls,
+        success (res) {
+          console.log('success')
+        },
+        fail (res) {
+          console.log(res, 'fail')
+        },
+        complete (res1) {
+          wx.hideLoading()
+        }
+      })
+    }).catch(res => {
+      console.log(res)
+    })
   }
 
 })

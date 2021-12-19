@@ -12,12 +12,12 @@ Page({
     canIUseOpenData: wx.canIUse('open-data.type.userAvatarUrl') && wx.canIUse('open-data.type.userNickName') // 如需尝试获取用户信息可改为false
   },
   // 事件处理函数
-  bindViewTap() {
+  bindViewTap () {
     wx.navigateTo({
       url: '../logs/logs'
     })
   },
-  onLoad() {
+  onLoad () {
     if (wx.getUserProfile) {
       this.setData({
         canIUseGetUserProfile: true
@@ -27,7 +27,12 @@ Page({
 
   SwitchTo: function (e) {
     wx.navigateTo({
-      url: '/pages' + e.mark.url
+      url: '/pages' + e.mark.url,
+      success (res) {
+        res.eventChannel.emit('num', {
+          num: e.currentTarget.dataset.num
+        })
+      }
     })
   }
 })

@@ -5,3 +5,6 @@ page {
   justify-content: center;
   align-items: center;
 }
+page .btn {
+  margin: 50px;
+}
