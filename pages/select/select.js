@@ -201,6 +201,7 @@ Page({
                         wx.showToast({
                           title: '获取图片失败'
                         })
+                        console.log(res)
                       })
                       )).then(res4 => {
                       const {
