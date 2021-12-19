@@ -80,7 +80,7 @@ Page({
   Start: function () {
     const that = this
     wx.showLoading({
-      title: '图片上传中',
+      title: '图片上传中'
     })
     // if (that.data.portrait.url === '/statics/add2.png') {
     //   wx.showToast({
@@ -159,17 +159,18 @@ Page({
         console.log(values.every(value => value.statusCode == 200))
         if (values.every(value => value.statusCode == 200)) {
           Auth.request({
-            url: `/start`,
+            url: '/start',
             data: {
-              hat: that.data.Selected.findIndex(value => value == true)
+              hat: that.data.Selected.findIndex(value => value == true) + 1
             },
             method: 'POST'
           }, wx.request).then(res => {
             wx.hideLoading({
-              success: (res) => {},
+              success: (res) => {
+              }
             })
             wx.showLoading({
-              title: '图片合成中',
+              title: '图片合成中'
             })
             if (res.statusCode == '200') {
               console.log(`${getApp().globalData.apiUrl}/${res.data.url}`)
@@ -204,14 +205,16 @@ Page({
                         that.setData({
                           bgScale: scale
                         })
+                        console.log(that.data.portrait.width)
                         that.setData({
                           'bg.width': width / scale,
                           'bg.height': height / scale,
-                          'portrait.width': that.data.portrait?.width / scale,
-                          'portrait.height': that.data.portrait?.height / scale
+                          'portrait.width': that.data.portrait.width / scale,
+                          'portrait.height': that.data.portrait.height / scale
                         })
                         wx.hideLoading({
-                          success: (res) => {},
+                          success: (res) => {
+                          }
                         })
                         wx.navigateTo({
                           url: '/pages/photo/photo',
@@ -234,7 +237,7 @@ Page({
                       })
                   }
                 },
-                fail() {
+                fail () {
                   failed()
                 }
               })
@@ -254,15 +257,18 @@ Page({
         failed()
         console.log(res)
       })
-      function failed() {
-        wx.hideLoading({
-          success: (res) => {},
-        })
-        wx.showToast({
-          title: '合成失败',
-          icon: 'error'
-        })
-      }
+
+    function failed () {
+      wx.hideLoading({
+        success: (res) => {
+        }
+      })
+      wx.showToast({
+        title: '合成失败',
+        icon: 'error'
+      })
+    }
+
     //     wx.request({
     //       url: `${getApp().globalData.apiUrl}/start`,
     //       header: {

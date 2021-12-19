@@ -243,6 +243,9 @@ Page({
   startMix: function (res) {
     const that = this
     const scale = this.data.portrait.width / this.data.portrait.init.width
+    this.setData({
+      'portrait.scale': scale
+    })
     wx.showLoading({
       title: '下载图片ing'
     })
@@ -251,7 +254,7 @@ Page({
       url: '/start-mix',
       data: {
         bgScale: 1 / that.data.bgScale,
-        scale: 1 / scale,
+        scale: scale,
         rotate: -that.data.portrait.rotate * 180 / Math.PI,
         center: that.data.portrait.center
       },
@@ -262,14 +265,14 @@ Page({
     }, wx.request).then(res => {
       console.log('start-mix', res)
       console.log(`${getApp().globalData.apiUrl}/${res.data.url}`)
-      let urls = []
+      const urls = []
       urls.push(`${getApp().globalData.apiUrl}/${res.data.url}`)
       wx.previewImage({
         urls: urls,
-        success(res) {
+        success (res) {
           console.log('success')
         },
-        fail(res) {
+        fail (res) {
           console.log(res, 'fail')
         },
         complete (res1) {
